@@ -1,64 +1,55 @@
-/*Variabel Dinamik*/
-:- dynamic(health/1).
-:- dynamic(armor/1).
-:- dynamic(currLoc/2). %(x, y)
-:- dynamic(inventory/1).
-:- dynamic(equip/1).
-:- dynamic(objLoc/3). %(nama_object, x, y)
-:- dynamic(enemyLoc/3). %(nama_enemy, x, y)
-:- dynamic(name/1).
-:- dynamic(deadzone/2). %(x, y)
+/*Included files */
+:-include('variables.pl').
 
-/*Variabel Statik*/
-
-health(100). 
-armor(none).
-currLoc(1,1).
-/*inventory(none). -- inventory kosong*/
-inventory(pisang).
-equip(none).
-enemy(joshua).
-
-/*default object*/
-obj(weapon, kulitPisang).
-obj(ammo, pisang).
-obj(medicine, ekado).
-obj(armor, jahim).
-
-/*default lokasi object*/
-objLoc(kulitPisang, 3, 4).
-objLoc(pisang, 8, 9).
-objLoc(ekado, 1, 4).
-objLoc(jahim, 6, 8).
-
-/*default peta*/
-loc(1,1,'hutan').
-loc(1,2,'hutan').
-loc(2,1,'hutan').
-loc(2,2,'kbl').
-
-/*default deadzone*/
-deadzone(9,1).
-
-/*default deadzone*/
-enemyLoc(joshua, 4, 3).
 
 /*Rules*/
-
 start :-
-	write('UNIX INVANSION'), nl,
+
+	write('███    █▄  ███▄▄▄▄    ▄█  ▀████    ▐████▀       ▄█  ███▄▄▄▄    ▄█    █▄     ▄████████ ████████▄     ▄████████    ▄████████    ▄████████ '), nl,
+	write('███    ███ ███▀▀▀██▄ ███    ███▌   ████▀       ███  ███▀▀▀██▄ ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███   ███    ███ '),nl,
+	write('███    ███ ███   ███ ███▌    ███  ▐███         ███▌ ███   ███ ███    ███   ███    ███ ███    ███   ███    █▀    ███    ███   ███    █▀  '),nl,
+	write('███    ███ ███   ███ ███▌    ▀███▄███▀         ███▌ ███   ███ ███    ███   ███    ███ ███    ███  ▄███▄▄▄      ▄███▄▄▄▄██▀   ███        '),nl,
+	write('███    ███ ███   ███ ███▌    ████▀██▄          ███▌ ███   ███ ███    ███ ▀███████████ ███    ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ▀███████████ '),nl,
+	write('███    ███ ███   ███ ███    ▐███  ▀███         ███  ███   ███ ███    ███   ███    ███ ███    ███   ███    █▄  ▀███████████          ███ '),nl,
+	write('███    ███ ███   ███ ███   ▄███     ███▄       ███  ███   ███ ███    ███   ███    ███ ███   ▄███   ███    ███   ███    ███    ▄█    ███ '),nl,
+	write('████████▀   ▀█   █▀  █▀   ████       ███▄      █▀    ▀█   █▀   ▀██████▀    ███    █▀  ████████▀    ██████████   ███    ███  ▄████████▀  '),nl
+	,nl,nl,nl,nl,nl,nl,nl,nl,nl,
+
+
 	write('Masukkan Nama (dimulai huruf kecil): '),
 	read(X),
 	asserta(name(X)),
 	write('Instruksi permainan'), nl,
 	do(help),
 	repeat,
-		write('>> '),
-		read(Input),
-		do(Input),nl,
-		end(Input).
+		write('>> '), /* Menandakan input */
+		read(Input), /*Meminta input dari usedr */
+		do(Input),nl, /*Menjadlankan do(Input) */
+		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
-do(help) :- 
+/* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
+do(help) :- showhelp.
+do(quit) :- write('end game'), nl, !.
+do(map) :- printLegend.
+do(n) :- north, !.
+do(s) :- south, !.
+do(w) :- west, !.
+do(e) :- east, !.
+do(drop(X)) :- drop(X), !.
+
+/* Fungsi yang BELUM di implementasikan (edit do di bawah sesuai kebutuhan)*/
+do(look) :-	write('look'), nl, !.
+do(take(X)):- takes(X),!.
+do(drop) :-	write('drop'), nl, !. /*Drop ini buat apa??? */
+do(use(X)):- uses(X),!.
+do(attack) :-	write('attack'), nl, !.
+do(status) :- statuss,!.
+do(save) :-	write('save'), nl, !.
+do(load) :-	write('load'), nl, !.
+do(_) :- write('Invalid Input'), nl, !.
+
+
+showhelp :-
 	name(X),
 	write(X), nl,
 	write('help'), nl,
@@ -77,8 +68,7 @@ do(help) :-
 	write('save'), nl,
 	write('load'), nl, !.
 
-do(quit) :- write('end game'), nl, !.
-do(map) :- 
+printLegend :-
 	write('Keterangan:'), nl,
 	write('>> P: Posisi '), name(X), write(X), write(' sekarang'), nl,
 	write('>> E: Enemy'), nl,
@@ -89,29 +79,12 @@ do(map) :-
 	write('>> X: Deadzone'), nl, nl,
 	printmap(0,0),!.
 
-do(n) :- north, !.
-do(s) :- south, !.
-do(w) :- west, !.
-do(e) :- east, !.
-do(drop(X)) :- drop(X), !.
-
-/*edit do di bawah sesuai kebutuhan*/
-do(look) :-	write('look'), nl, !.
-do(take) :-	write('take'), nl, !.
-do(drop) :-	write('drop'), nl, !.
-do(use) :-	write('use'), nl, !.
-do(attack) :-	write('attack'), nl, !.
-do(status) :-	write('status'), nl, !.
-do(save) :-	write('save'), nl, !.
-do(load) :-	write('load'), nl, !.
-do(_) :- write('Invalid Input'), nl, !.
 
 /*PRINT MAP*/
-
 printmap(11,11) :- write('X '), nl, !.
 printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
-printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1), !.
+printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 printmap(X,0) :- write('X '), printmap(X,1), !.
 printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
@@ -136,8 +109,121 @@ west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), 
 east :- currLoc(X,Y), Y == 10, !, write('di paling kanan'), nl, !.
 east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
-/*END CONDITION*/
-end(quit) :- halt, !.
+/* Status*/
+statuss :-
+	health(Y),
+	write('Health : '), write(Y),nl,
+	armor(Z),
+	write('Armor : '), write(Z),nl,
+	equip(W),
+	write('Weapon : '), write(W),nl,
+	ammo(A),
+	write('Ammo : '), write(A),nl,
+	write('List Inventory : '),
+	findall(I,inventory(I),Listinvent),
+	write(Listinvent),nl,!.
+
+
+
+
+equip_armor(jahim) :- armor(X), retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,write('Mantap bosque'),nl,!.
+equip_armor(jamal) :- armor(X), retract(armor(X)),asserta(armor(50)), write('Armor : '),write(50),nl,write('Not bad bosque'),nl,!.
+equip_armor(slayerSparta) :- armor(X), retract(armor(X)),asserta(armor(25)), write('Armor : '),write(25),nl,write('Rapih bet bosque'),nl,!.
+
+pakai_obat(crisbar) :- health(X), retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
+pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
+pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(hp(W)), write('Darahmu : '),write(W),nl,!.
+pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
+pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(hp(W)), write('Darahmu : '),write(W),nl,!.
+
+equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
+equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
+equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!.
+equip_weapon(laptop) :- equip(X), retract(equip(X)),asserta(equip(laptop)), write('senjata yang dipakai : Laptop (Damage attack : 100 !!! Ngeri bosque)'),nl,!.
+/*equip_ammo(ammoC) :- equip(kunciC), ammo(X), X > 100,retract(health(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
+equip_ammo(ammoC) :- equip(kunciC), ammo(X), W is X+5,retract(ammo(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.*/
+
+/* Take ammo */
+/* takes(X):-
+	obj(ammo,X),
+	objLoc(ammo,X,Y,Z),
+	currLoc(Y,Z),
+	asserta(inventory(X)),
+	retract(objLoc(Jenis,X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!. */
+
+/* Take armor */
+takes(X):-
+	obj(armor,X),
+	objLoc(armor,X,Y,Z),
+	currLoc(Y,Z),
+	equip_armor(X),
+	retract(objLoc(armor,X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!.
+
+/* Take weapon */
+takes(X):-
+	obj(weapon,X),
+	objLoc(weapon,X,Y,Z),
+	currLoc(Y,Z),
+	asserta(inventory(X)),
+	retract(objLoc(weapon,X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!.
+
+/* Take another thing */
+takes(X):-
+	obj(Jenis,X),
+	objLoc(Jenis,X,Y,Z),
+	currLoc(Y,Z),
+	asserta(inventory(X)),
+	retract(objLoc(Jenis,X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!.
+takes(X):-
+	write(X),write(' tidak ada di sini'), nl.
+
+
+/* Use medicine*/
+uses(X) :-
+	obj(medicine,X),
+	inventory(X),
+	pakai_obat(X),
+	retract(inventory(X)),move_all_enemies,!.
+/* Use weapon*/
+uses(X) :-
+	obj(weapon,X),
+	inventory(X),
+	equip(Y),
+	Y == 'none',
+	equip_weapon(X),
+	retract(inventory(X)),move_all_enemies,!.
+
+uses(X) :-
+	obj(weapon,X),
+	inventory(X),
+	equip(Y),
+	asserta(inventory(Y)),
+	equip_weapon(X),
+	retract(inventory(X)),move_all_enemies,!.
 
 drop(X) :- \+inventory(X), !, write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 drop(X) :- inventory(X), retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), !.
+
+/* Use magazine */
+/* use1(X) :-
+	obj(magazine,X),
+	inventory(X),
+	equip(Y),
+	asserta(inventory(Y)),
+	equip_weapon(X),
+	retract(inventory(X)),move_all_enemies,!. */
+
+/*END CONDITION*/
+end(quit) :- halt, !.
+
+end_condition(_) :-
+  hp(0),
+  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl,!.
+
+end_condition(_) :-
+  totalenemy(0),
+  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl,!.
