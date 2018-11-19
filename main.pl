@@ -1,7 +1,7 @@
 /*Included files */
 :-include('variables.pl').
 :-include('enemy.pl').
-
+/*badur was here*/
 
 /*Rules*/
 start :-
