@@ -30,7 +30,7 @@ start :-
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
 do(help) :- showhelp.
 do(quit) :- write('end game'), nl, !.
-do(map) :- printLegend.
+do(map) :- printLegend, !.
 do(save) :-	savegame, !.
 do(n) :- north, !.
 do(s) :- south, !.
@@ -93,8 +93,8 @@ printLegend :-
 	write('>> O: Ammo'), nl,
 	write('>> A: Armor'), nl,
 	write('>> M: Medicine'), nl,
-	write('>> W: weapon'), nl,
-	write('>> X: Deadzone'), nl, nl,
+	write('>> W: weapon'), nl, 
+	write('>> X: Deadzone'), nl, nl, 
 	printmap(0,0),!.
 
 
@@ -109,7 +109,7 @@ printmap(X,Y) :- objLoc(A,X,Y), obj(ammo, A), !,  write('O '), Y1 is Y+1, printm
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon, A), !,  write('W '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !.
+printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !. 
 printmap(X,Y) :- deadzone(X,Y), !,  write('X '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 
@@ -165,6 +165,7 @@ equip_ammo(ammoC) :- equip(kunciC), ammo(X), W is X+5,retract(ammo(X)),asserta(h
 /* takes(X):-
 	obj(ammo,X),
 	objLoc(ammo,X,Y,Z),
+	ammo(X,A),
 	currLoc(Y,Z),
 	asserta(inventory(X)),
 	retract(objLoc(Jenis,X,Y,Z)),
@@ -191,11 +192,11 @@ takes(X):-
 /* Take another thing */
 takes(X):-
 	obj(Jenis,X),
-	objLoc(Jenis,X,Y,Z),
+	objLoc(X,Y,Z),
 	currLoc(Y,Z),
 	asserta(inventory(X)),
-	retract(objLoc(Jenis,X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!.
+	retract(objLoc(X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl,!.
 takes(X):-
 	write(X),write(' tidak ada di sini'), nl.
 
