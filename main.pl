@@ -1,5 +1,6 @@
 /*Included files */
 :-include('variables.pl').
+:-include('enemy.pl').
 
 
 /*Rules*/
@@ -21,10 +22,12 @@ start :-
 	asserta(name(X)),
 	write('Instruksi permainan'), nl,
 	do(help),
+	spawn,
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
 		do(Input),nl, /*Menjadlankan do(Input) */
+		move_all_enemies,
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
@@ -93,8 +96,8 @@ printLegend :-
 	write('>> O: Ammo'), nl,
 	write('>> A: Armor'), nl,
 	write('>> M: Medicine'), nl,
-	write('>> W: weapon'), nl, 
-	write('>> X: Deadzone'), nl, nl, 
+	write('>> W: weapon'), nl,
+	write('>> X: Deadzone'), nl, nl,
 	printmap(0,0),!.
 
 
@@ -109,7 +112,7 @@ printmap(X,Y) :- objLoc(A,X,Y), obj(ammo, A), !,  write('O '), Y1 is Y+1, printm
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon, A), !,  write('W '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !. 
+printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- deadzone(X,Y), !,  write('X '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 

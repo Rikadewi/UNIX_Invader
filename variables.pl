@@ -1,3 +1,8 @@
+/*Menandakan lokasi valid*/
+is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
+
+
+
 /*Variabel Dinamik*/
 :- dynamic(health/1).
 :- dynamic(armor/1).
@@ -18,8 +23,6 @@ currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
 
 equip(none).
-enemy(joshua).
-enemyLoc(joshua, 4, 3).
 ammo(badur, 0).
 
 /*default object*/
