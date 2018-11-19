@@ -12,15 +12,15 @@
 
 /*Static Variable*/
 
-health(100).
+health(20).
 armor(none).
 currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
-inventory(none).
+
 equip(none).
 enemy(joshua).
 enemyLoc(joshua, 4, 3).
-ammo(0).
+ammo(badur, 0).
 
 /*default object*/
 obj(armor, jahim).
