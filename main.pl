@@ -134,28 +134,30 @@ east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), 
 statuss :-
 	health(Y),
 	write('Health : '), write(Y),nl,
-	armor(Z),
-	write('Armor : '), write(Z),nl,
+	armor(Z,N),
+	write('Armor : '), write(N),nl,
 	equip(W),
 	write('Weapon : '), write(W),nl,
 	ammo(A),
+	write('hahah'),
 	write('Ammo : '), write(A),nl,
 	write('List Inventory : '),
-	findall(I,inventory(I),Listinvent),
-	write(Listinvent),nl,!.
+	findall(I,inventory(I),Listinvent), nl,
+	printlist(Listinvent),nl,!.
+
+printlist([]).
+printlist([H|T]) :- write(H), nl, printlist(T),!.
 
 
-
-
-equip_armor(jahim) :- armor(X), retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,write('Mantap bosque'),nl,!.
-equip_armor(jamal) :- armor(X), retract(armor(X)),asserta(armor(50)), write('Armor : '),write(50),nl,write('Not bad bosque'),nl,!.
-equip_armor(slayerSparta) :- armor(X), retract(armor(X)),asserta(armor(25)), write('Armor : '),write(25),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(jahim) :- armor(A,N), retract(armor(A,X)),asserta(armor(jahim,100)), write('Armor : '),write(100),nl,write('Mantap bosque'),nl,!.
+equip_armor(jamal) :- armor(A,X), retract(armor(A,X)),asserta(armor(jamal,50)), write('Armor : '),write(50),nl,write('Not bad bosque'),nl,!.
+equip_armor(slayerSparta) :- armor(A,X), retract(armor(A,X)),asserta(armor(slayerSparta,25)), write('Armor : '),write(25),nl,write('Rapih bet bosque'),nl,!.
 
 pakai_obat(crisbar) :- health(X), retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
-pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
-pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(hp(W)), write('Darahmu : '),write(W),nl,!.
-pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
-pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(hp(W)), write('Darahmu : '),write(W),nl,!.
+pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
+pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
+pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
+pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 
 equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
@@ -177,29 +179,30 @@ equip_ammo(ammoC) :- equip(kunciC), ammo(X), W is X+5,retract(ammo(X)),asserta(h
 /* Take armor */
 takes(X):-
 	obj(armor,X),
-	objLoc(armor,X,Y,Z),
-	currLoc(Y,Z),
+	objLoc(X,Y,Z),
+	currLoc(Y,Z),!,
 	equip_armor(X),
-	retract(objLoc(armor,X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!.
+	retract(objLoc(X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl, /*move_all_enemies,*/!.
 
 /* Take weapon */
 takes(X):-
 	obj(weapon,X),
-	objLoc(weapon,X,Y,Z),
-	currLoc(Y,Z),
+	objLoc(X,Y,Z),
+	currLoc(Y,Z),!,
 	asserta(inventory(X)),
-	retract(objLoc(weapon,X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!.
+	retract(objLoc(X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl,/*move_all_enemies,*/!.
 
 /* Take another thing */
 takes(X):-
 	obj(Jenis,X),
 	objLoc(X,Y,Z),
-	currLoc(Y,Z),
+	currLoc(Y,Z),!,
 	asserta(inventory(X)),
 	retract(objLoc(X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl,!.
+	write('item '), write(X),write(' diambil'), nl, /*move_all_enemies,*/!.
+
 takes(X):-
 	write(X),write(' tidak ada di sini'), nl.
 
@@ -209,7 +212,7 @@ uses(X) :-
 	obj(medicine,X),
 	inventory(X),
 	pakai_obat(X),
-	retract(inventory(X)),move_all_enemies,!.
+	retract(inventory(X)),!.
 /* Use weapon*/
 uses(X) :-
 	obj(weapon,X),
@@ -217,7 +220,7 @@ uses(X) :-
 	equip(Y),
 	Y == 'none',
 	equip_weapon(X),
-	retract(inventory(X)),move_all_enemies,!.
+	retract(inventory(X)),!.
 
 uses(X) :-
 	obj(weapon,X),
@@ -225,7 +228,7 @@ uses(X) :-
 	equip(Y),
 	asserta(inventory(Y)),
 	equip_weapon(X),
-	retract(inventory(X)),move_all_enemies,!.
+	retract(inventory(X)),!.
 
 drop(X) :- \+inventory(X), !, write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 drop(X) :- inventory(X), retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), !.

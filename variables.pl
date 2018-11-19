@@ -1,11 +1,6 @@
-/*Menandakan lokasi valid*/
-is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
-
-
-
 /*Variabel Dinamik*/
 :- dynamic(health/1).
-:- dynamic(armor/1).
+:- dynamic(armor/2). %(nama_armor, darah_armor).
 :- dynamic(currLoc/2). %(x, y)
 :- dynamic(inventory/1).
 :- dynamic(equip/1).
@@ -17,18 +12,20 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 
 /*Static Variable*/
 
-health(20).
-armor(none).
+health(50).
+armor(none,0).
 currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
-
+inventory(nasjep).
 equip(none).
-ammo(badur, 0).
+enemy(joshua).
+enemyLoc(joshua, 4, 3).
+ammo(0).
 
 /*default object*/
 obj(armor, jahim).
 obj(armor, jamal).
-obj(armor, kemeja).
+obj(armor, slayerSparta).
 obj(medicine,ekado).
 obj(medicine,nasjep).
 obj(medicine,crisbar).
