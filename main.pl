@@ -31,6 +31,7 @@ start :-
 do(help) :- showhelp.
 do(quit) :- write('end game'), nl, !.
 do(map) :- printLegend.
+do(save) :-	savegame, !.
 do(n) :- north, !.
 do(s) :- south, !.
 do(w) :- west, !.
@@ -40,14 +41,31 @@ do(drop(X)) :- drop(X), !.
 /* Fungsi yang BELUM di implementasikan (edit do di bawah sesuai kebutuhan)*/
 do(look) :-	write('look'), nl, !.
 do(take(X)):- takes(X),!.
-do(drop) :-	write('drop'), nl, !. /*Drop ini buat apa??? */
 do(use(X)):- uses(X),!.
 do(attack) :-	write('attack'), nl, !.
 do(status) :- statuss,!.
-do(save) :-	write('save'), nl, !.
 do(load) :-	write('load'), nl, !.
 do(_) :- write('Invalid Input'), nl, !.
 
+savegame:-
+	open('savefile.txt',write,Save),
+	name(Nama_User),
+	write(Save,name(Nama_User)),write(Save,'.'),nl(Save),
+	armor(Arm),
+	write(Save,armor(Arm)),write(Save,'.'),nl(Save),
+	health(Heal),
+	write(Save,health(Heal)),write(Save,'.'),nl(Save),
+	equip(Eq),
+	write(Save,equip(Eq)),write(Save,'.'),nl(Save),
+	currLoc(X,Y),
+	write(Save,currLoc(X,Y)),write(Save,'.'),nl(Save),
+	ammo(Amunisi),
+	write(Save,ammo(Amunisi)),write(Save,'.'),nl(Save),
+	forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),
+	forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
+	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
+	forall(deadzone(Dx,Dy),(write(Save,deadzone(Dx,Dy)),write(Save,'.'),nl(Save))),
+	close(Save).
 
 showhelp :-
 	name(X),
