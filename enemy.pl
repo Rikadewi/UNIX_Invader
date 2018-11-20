@@ -45,7 +45,6 @@ spawn :-
   spawn_enemy(U).
 
 
-
 remove_all_enemies :-
 	enemyLoc(_,_,_),
 	retractall(enemyLoc(_,_,_)), !.
@@ -127,7 +126,6 @@ move_ene(List):-
 move_ene(List) :-
 	List = [_|Tail],
 	move_ene(Tail).
-
 
 move_all_enemies :-
   write('semua enemy bergerak!'),nl,

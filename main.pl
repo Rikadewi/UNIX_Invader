@@ -14,8 +14,7 @@ start :-
 	write('███    ███ ███   ███ ███    ▐███  ▀███         ███  ███   ███ ███    ███   ███    ███ ███    ███   ███    █▄  ▀███████████          ███ '),nl,
 	write('███    ███ ███   ███ ███   ▄███     ███▄       ███  ███   ███ ███    ███   ███    ███ ███   ▄███   ███    ███   ███    ███    ▄█    ███ '),nl,
 	write('████████▀   ▀█   █▀  █▀   ████       ███▄      █▀    ▀█   █▀   ▀██████▀    ███    █▀  ████████▀    ██████████   ███    ███  ▄████████▀  '),nl
-	,nl,nl,nl,nl,nl,nl,nl,nl,nl,
-
+	,nl,nl,
 
 	write('Masukkan Nama (dimulai huruf kecil): '),
 	read(X),
@@ -27,11 +26,13 @@ start :-
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
 		do(Input),nl, /*Menjadlankan do(Input) */
-		%move_all_enemies,
+
+		/*move_all_enemies, */
+
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
-do(help) :- showhelp.
+do(help) :- showhelp, !.
 do(quit) :- write('end game'), nl, !.
 do(map) :- printLegend, !.
 do(save) :-	savegame, !.
@@ -102,6 +103,8 @@ printLegend :-
 
 
 /*PRINT MAP*/
+is_loc_valid(X,Y) :- X<11, Y<11, X>0, Y>0, forall(deadzone(X1,Y1), X =:= X1), forall(deadzone(X2,Y2), Y2 =:= Y), !.
+
 printmap(11,11) :- write('X '), nl, !.
 printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
@@ -139,7 +142,6 @@ statuss :-
 	equip(W),
 	write('Weapon : '), write(W),nl,
 	ammo(A),
-	write('hahah'),
 	write('Ammo : '), write(A),nl,
 	write('List Inventory : '),
 	findall(I,inventory(I),Listinvent), nl,
@@ -230,8 +232,20 @@ uses(X) :-
 	equip_weapon(X),
 	retract(inventory(X)),!.
 
-drop(X) :- \+inventory(X), !, write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
-drop(X) :- inventory(X), retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), !.
+/* Drop */
+
+/* Drop dari inventory*/
+drop(X) :- inventory(X),!, retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), !.
+
+
+/* Drop armor*/
+drop(X) :- armor(X,N), newarmor(X,N), !, retract(armor(X,N)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(armor(none,0)), !.
+drop(X) :- armor(X,N),!, write('armor yang sudah berkurang tidak dapat didrop').
+
+/* Drop weapon*/
+drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)), !.
+
+drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 
 /* Use magazine */
 /* use1(X) :-
@@ -241,6 +255,7 @@ drop(X) :- inventory(X), retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, 
 	asserta(inventory(Y)),
 	equip_weapon(X),
 	retract(inventory(X)),move_all_enemies,!. */
+
 
 /*END CONDITION*/
 end(quit) :- halt, !.

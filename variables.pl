@@ -3,7 +3,7 @@
 :- dynamic(armor/2). %(nama_armor, darah_armor).
 :- dynamic(currLoc/2). %(x, y)
 :- dynamic(inventory/1).
-:- dynamic(equip/1).
+:- dynamic(equip/1). %equip current weapon
 :- dynamic(objLoc/3). %(nama_object, x, y)
 :- dynamic(enemyLoc/3). %(nama_enemy, x, y)
 :- dynamic(name/1).
@@ -17,6 +17,9 @@ armor(none,0).
 currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
 inventory(nasjep).
+inventory(jamal).
+inventory(kunciC).
+inventory(ammoC).
 equip(none).
 enemy(joshua).
 enemyLoc(joshua, 4, 3).
@@ -51,8 +54,8 @@ damage(laptop,100).
 
 
 /*default lokasi object*/
-objLoc(kulitPisang, 3, 4).
-objLoc(pisang, 8, 9).
+objLoc(laptop, 3, 4).
+objLoc(ammoLaptop, 8, 9).
 objLoc(ekado, 1, 4).
 objLoc(jahim, 6, 8).
 
