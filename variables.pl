@@ -26,6 +26,9 @@ ammo(0).
 obj(armor, jahim).
 obj(armor, jamal).
 obj(armor, slayerSparta).
+newarmor(jahim, 100).
+newarmor(jamal, 50).
+newarmor(slayeSparta, 25).
 obj(medicine,ekado).
 obj(medicine,nasjep).
 obj(medicine,crisbar).

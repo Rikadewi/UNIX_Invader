@@ -149,9 +149,9 @@ printlist([]).
 printlist([H|T]) :- write(H), nl, printlist(T),!.
 
 
-equip_armor(jahim) :- armor(A,N), retract(armor(A,X)),asserta(armor(jahim,100)), write('Armor : '),write(100),nl,write('Mantap bosque'),nl,!.
-equip_armor(jamal) :- armor(A,X), retract(armor(A,X)),asserta(armor(jamal,50)), write('Armor : '),write(50),nl,write('Not bad bosque'),nl,!.
-equip_armor(slayerSparta) :- armor(A,X), retract(armor(A,X)),asserta(armor(slayerSparta,25)), write('Armor : '),write(25),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayeSparta,N), retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
 
 pakai_obat(crisbar) :- health(X), retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
