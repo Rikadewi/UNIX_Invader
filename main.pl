@@ -27,7 +27,7 @@ start :-
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
 		do(Input),nl, /*Menjadlankan do(Input) */
-		move_all_enemies,
+		%move_all_enemies,
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
@@ -54,8 +54,8 @@ savegame:-
 	open('savefile.txt',write,Save),
 	name(Nama_User),
 	write(Save,name(Nama_User)),write(Save,'.'),nl(Save),
-	armor(Arm),
-	write(Save,armor(Arm)),write(Save,'.'),nl(Save),
+	armor(Nama_Arm,Shield),
+	write(Save,armor(Nama_Arm,Shield)),write(Save,'.'),nl(Save),
 	health(Heal),
 	write(Save,health(Heal)),write(Save,'.'),nl(Save),
 	equip(Eq),
