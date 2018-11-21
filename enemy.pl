@@ -1,6 +1,5 @@
 /*Deklarasi enemy */
 /*enemy(ID,nama,health,damage) */
-
 enemy(1,joshua,100,100).
 enemy(2,badur,20,20).
 enemy(3,lukas,20,20).
@@ -8,9 +7,9 @@ enemy(4,rika,20,20).
 enemy(5,alam,20,20).
 enemy(6,johanes,20,20).
 enemy(7,tude,20,20).
-enemy(8,bari,20,20).
 enemy(9,asyraf,20,20).
 enemy(10,asif,20,20).
+enemy(8,bari,20,20).
 enemy(11,jofi,20,20).
 enemy(12,kintan,20,20).
 enemy(13,vania,20,20).
@@ -18,7 +17,6 @@ enemy(14,asistenlogif,20,20).
 enemy(15,winston,20,20).
 enemy(16,steve,20,20).
 enemy(17,dika,20,20).
-
 
 
 spawn_enemy(N):-
@@ -78,7 +76,7 @@ move_enemy_kanan(N) :-
 	Xmove is X+1,
 	Ymove is Y,
 	retract(enemyLoc(N,X,Y)),
-	asserta(enemyLoc(Nmove,Xmove,Ymove)),
+	asserta(enemyLoc(N,Xmove,Ymove)),
 	is_loc_valid(Xmove,Ymove), !.
 move_enemy_kanan(N) :-
 	move_enemy_kiri(N), !.
@@ -88,7 +86,7 @@ move_enemy_kiri(N) :-
 	Xmove is X-1,
 	Ymove is Y,
 	retract(enemyLoc(N,X,Y)),
-	asserta(enemyLoc(Nmove,Xmove,Ymove)),
+	asserta(enemyLoc(N,Xmove,Ymove)),
 	is_loc_valid(Xmove,Ymove), !.
 move_enemy_kiri(N) :-
 	move_enemy_kanan(N), !.

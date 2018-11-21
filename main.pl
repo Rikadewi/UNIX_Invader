@@ -1,6 +1,7 @@
 /*Included files */
 :-include('variables.pl').
 :-include('enemy.pl').
+:-include('look.pl').
 /*badur was here*/
 
 /*Rules*/
@@ -25,10 +26,8 @@ start :-
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
+		move_all_enemies,
 		do(Input),nl, /*Menjadlankan do(Input) */
-
-		/*move_all_enemies, */
-
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
@@ -43,7 +42,7 @@ do(e) :- east, !.
 do(drop(X)) :- drop(X), !.
 
 /* Fungsi yang BELUM di implementasikan (edit do di bawah sesuai kebutuhan)*/
-do(look) :-	write('look'), nl, !.
+do(look) :-	look_around, nl, !.
 do(take(X)):- takes(X),!.
 do(use(X)):- uses(X),!.
 do(attack) :-	write('attack'), nl, !.
