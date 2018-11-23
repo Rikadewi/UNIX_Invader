@@ -4,7 +4,7 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 
 /*Variabel Dinamik*/
 :- dynamic(health/1).
-:- dynamic(armor/2). %(nama_armor, darah_armor).
+:- dynamic(armor/1). %(darah_armor).
 :- dynamic(currLoc/2). %(x, y)
 :- dynamic(inventory/1).
 :- dynamic(equip/1). %equip current weapon
@@ -12,12 +12,12 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(enemyLoc/3). %(nama_enemy, x, y)
 :- dynamic(name/1).
 :- dynamic(deadzone/2). %(x, y)
-:- dynamic(ammo/1).
+:- dynamic(ammo/2).
 
 /*Static Variable*/
 
 health(50).
-armor(jamal,40).
+armor(40).
 currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
 inventory(nasjep).
@@ -26,7 +26,7 @@ inventory(ammo).
 inventory(jahim).
 
 equip(batuRuby).
-ammo(4).
+ammo(ammoRuby, 4).
 
 /*default object*/
 obj(armor, jahim).
@@ -44,7 +44,9 @@ newarmor(jahim, 100).
 newarmor(jamal, 50).
 newarmor(sweater, 25).
 
-newammo(ammo, 5).
+newammo(ammoruby, 5).
+newammo(ammoC, 5).
+newammo(ammoPython, 5).
 
 damage(kunciC,20).
 damage(batuRuby,30).
@@ -54,7 +56,7 @@ damage(ularPython,40).
 objLoc(kunciC, 3, 4).
 objLoc(ammo, 8, 9).
 objLoc(ekado, 1, 4).
-objLoc(jahim, 6, 8).
+objLoc(sweater, 6, 8).
 
 /*default peta*/
 loc(1,1,'hutan').
