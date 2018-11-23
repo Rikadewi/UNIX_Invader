@@ -187,7 +187,7 @@ takes(X):-
 	currLoc(Y,Z),!,
 	equip_armor(X),
 	retract(objLoc(X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl, /*move_all_enemies,*/!.
+	write('item '), write(X), write(' diambil'), nl, !.
 
 /* Take weapon */
 	takes(X):-
@@ -196,7 +196,7 @@ takes(X):-
 	currLoc(Y,Z),!,
 	asserta(inventory(X)),
 	retract(objLoc(X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl, write('kamu siap untuk bertempur!'),nl,/*move_all_enemies,*/!.
+	write('item '), write(X),write(' diambil'), nl, write('kamu siap untuk bertempur!'),nl, !.
 
 /* Take ammo & medicine */
 takes(X):-
@@ -205,21 +205,21 @@ takes(X):-
 	currLoc(Y,Z),!,
 	asserta(inventory(X)),
 	retract(objLoc(X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl, /*move_all_enemies,*/!.
+	write('item '), write(X),write(' diambil'), nl, !.
 
 takes(X):-
-	write(X),write(' tidak ada di sini'), nl.
+	write(X), write(' tidak ada di sini'), nl.
 
 
 /* Use medicine*/
 uses(X) :-
 	obj(medicine,X),
 	inventory(X),
-	equip_ammo(X),
+	pakai_obat(X),
 	retract(inventory(X)),!.
 /* Use Ammo */
 uses(X) :-
-	obj(gun_ammo,X),
+	obj(weapon_ammo,X),
 	inventory(X),
 	equip_ammo(X),
 	retract(inventory(X)),!.
@@ -248,29 +248,17 @@ drop(X) :- inventory(X),!, retract(inventory(X)), currLoc(A,B), asserta(objLoc(X
 
 
 /* Drop armor*/
-drop(X) :- armor(X,N), newarmor(X,N), !, retract(armor(X,N)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(armor(none,0)), write(X), write('berhasil di drop'), nl, !.
-drop(X) :- armor(X,N),!, retract(armor(X,N)), asserta(armor(none,0)), write('armor yang sudah berkurang sehingga hilang dari peta'), nl, !.
+drop(X) :- armor(X,N), newarmor(X,N), !, retract(armor(X,N)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(armor(none,0)), write(X), write(' berhasil di drop'), nl, !.
+drop(X) :- armor(X,N),!, retract(armor(X,N)), asserta(armor(none,0)), write('armor sudah berkurang sehingga hilang dari peta'), nl, !.
 
 /* Drop weapon*/
 drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)),  write(X), write(' berhasil di drop'), nl,!.
 
 /* Drop ammo*/
-drop(ammo) :- ammo(X), newammo(ammo, X), !, retract(ammo(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(ammmo(0)),  write(X), write('berhasil di drop'), nl,!.
-drop(X) :- ammo(X),!, retract(ammo(X)), asserta(ammmo(0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
+drop(ammo) :- ammo(X), newammo(ammo, X), !, retract(ammo(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(ammo(0)),  write(X), write('berhasil di drop'), nl,!.
+drop(ammo) :- ammo(X),!, retract(ammo(X)), asserta(ammo(0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
 
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
-
-
-
-/* Use magazine */
-/* use1(X) :-
-	obj(magazine,X),
-	inventory(X),
-	equip(Y),
-	asserta(inventory(Y)),
-	equip_weapon(X),
-	retract(inventory(X)),!. */
-
 
 /*END CONDITION*/
 end(quit) :- halt, !.

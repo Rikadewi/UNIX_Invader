@@ -50,7 +50,7 @@ lookat(X,Y) :-
 
 
 lookat(X,Y) :-
-	obj(ammo,Z),
+	obj(weapon_ammo,Z),
 	objLoc(Z,X,Y),
 	write('O '),!.
 

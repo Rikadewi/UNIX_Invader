@@ -17,7 +17,7 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 /*Static Variable*/
 
 health(50).
-armor(jamal,50).
+armor(jamal,40).
 currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
 inventory(nasjep).
@@ -26,7 +26,7 @@ inventory(ammo).
 inventory(jahim).
 
 equip(batuRuby).
-ammo(5).
+ammo(4).
 
 /*default object*/
 obj(armor, jahim).
