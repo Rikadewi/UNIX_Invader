@@ -40,8 +40,8 @@ spawn :-
   random(1,18,Z),
   spawn_enemy(Z),
   random(1,18,U),
-  spawn_enemy(U).
-
+  spawn_enemy(U),
+  asserta(totalenemy(4)).
 
 remove_all_enemies :-
 	enemyLoc(_,_,_),
@@ -57,7 +57,8 @@ move_enemy_bawah(V) :-
 	Ymove is Y+1,
 	retract(enemyLoc(V,X,Y)),
 	asserta(enemyLoc(V,Xmove,Ymove)),
-	is_loc_valid(Xmove,Ymove), !.
+	\+deadzone(Xmove,Ymove), !,
+  enemyaction(V,Xmove,Ymove).
 move_enemy_bawah(N) :-
 	move_enemy_atas(N), !.
 
@@ -67,7 +68,7 @@ move_enemy_atas(N) :-
 	Ymove is Y-1,
 	retract(enemyLoc(N,X,Y)),
 	asserta(enemyLoc(N,Xmove,Ymove)),
-	is_loc_valid(Xmove,Ymove), !.
+	\+deadzone(Xmove,Ymove), !.
 move_enemy_atas(N) :-
 	move_enemy_bawah(N), !.
 
@@ -77,7 +78,7 @@ move_enemy_kanan(N) :-
 	Ymove is Y,
 	retract(enemyLoc(N,X,Y)),
 	asserta(enemyLoc(N,Xmove,Ymove)),
-	is_loc_valid(Xmove,Ymove), !.
+	\+deadzone(Xmove,Ymove), !.
 move_enemy_kanan(N) :-
 	move_enemy_kiri(N), !.
 
@@ -87,7 +88,7 @@ move_enemy_kiri(N) :-
 	Ymove is Y,
 	retract(enemyLoc(N,X,Y)),
 	asserta(enemyLoc(N,Xmove,Ymove)),
-	is_loc_valid(Xmove,Ymove), !.
+	\+deadzone(Xmove,Ymove), !.
 move_enemy_kiri(N) :-
 	move_enemy_kanan(N), !.
 
@@ -129,3 +130,46 @@ move_all_enemies :-
   write('semua enemy bergerak!'),nl,
 	findall(N,enemyLoc(N,_,_),Listene),
 	move_ene(Listene), !.
+
+
+attack_enemy :-
+  currLoc(X,Y),
+  enemyLoc(V,X,Y),
+  equip(W),
+  ammo(WA),
+  totalenemy(N),
+  write('A wild '),write(V),write(' appears!'),nl,
+  write('Anda menggunakan '), write(W),nl,
+  write(A), write(' telah berhasil dinetralisir'),
+  retract(enemyLoc(V,X,Y)),
+  retract(totalenemy(N)),
+  retract(ammo(WA)),
+  WAnew is WA-1
+  Nnew is N-1,
+  asserta(ammo(WAnew)),
+  asserta(totalenemy(Nnew)).
+
+attack_enemy :-
+  currLoc(X,Y),
+  enemyLoc(V,X,Y),
+  write('Anda mencoba melawannya dengn tangan kosong, namun apa daya seorang mahasiswa IF yang jarang olahraga'),nl,
+  write('Seranganmu akhirnya Gagal!'),!.
+
+attack_enemy :-
+  write('tidak ada musuh di sekitar, ferguso'),nl,!.
+
+
+enemyaction(V,X,Y) :-
+  currLoc(X,Y),!,
+  random(0,2,C), %klo 1 kena, kalo 0 nggak
+  hitplayer(V,C).
+
+enemyaction(V,X,Y).
+
+
+hitplayer(V,1) :-
+  enemy(_,V,_,D),
+  
+
+
+hitplayer(V,2) :-

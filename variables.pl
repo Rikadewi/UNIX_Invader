@@ -13,6 +13,8 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(name/1).
 :- dynamic(deadzone/2). %(x, y)
 :- dynamic(ammo/1).
+:- dynamic(totalenemy/1).
+
 
 /*Static Variable*/
 

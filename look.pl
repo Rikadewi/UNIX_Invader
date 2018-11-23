@@ -58,6 +58,7 @@ lookat(X,Y) :-
 	currLoc(X,Y),
 	write('P '),!.
 
+
 lookat(X,Y) :-
 	\+is_valid(X,Y),
 	write('X '),!.

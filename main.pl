@@ -26,7 +26,7 @@ start :-
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
-		
+
 		do(Input),nl, /*Menjadlankan do(Input) */
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
@@ -45,7 +45,7 @@ do(drop(X)) :- drop(X), move_all_enemies,!.
 do(look) :-	look_around, nl, !.
 do(take(X)):- takes(X),move_all_enemies,!.
 do(use(X)):- uses(X),move_all_enemies,!.
-do(attack) :-	write('attack'), nl, move_all_enemies,!.
+do(attack) :-	attack_enemy, move_all_enemies,!.
 do(status) :- statuss,!.
 do(load) :-	write('load'), nl, !.
 do(_) :- write('Invalid Input'), nl, !.
@@ -173,7 +173,7 @@ pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W))
 pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 
-equip_ammo(ammo) :- ammo(X), W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!. 
+equip_ammo(ammo) :- ammo(X), W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!.
 
 equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
