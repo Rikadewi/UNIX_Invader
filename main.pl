@@ -26,7 +26,7 @@ start :-
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
-		
+
 		do(Input),nl, /*Menjadlankan do(Input) */
 		end_condition,
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
@@ -55,16 +55,16 @@ savegame:-
 	open('savefile.txt',write,Save),
 	name(Nama_User),
 	write(Save,name(Nama_User)),write(Save,'.'),nl(Save),
-	armor(Nama_Arm,Shield),
-	write(Save,armor(Nama_Arm,Shield)),write(Save,'.'),nl(Save),
+	armor(Nama_Arm),
+	write(Save,armor(Nama_Arm)),write(Save,'.'),nl(Save),
 	health(Heal),
 	write(Save,health(Heal)),write(Save,'.'),nl(Save),
 	equip(Eq),
 	write(Save,equip(Eq)),write(Save,'.'),nl(Save),
 	currLoc(X,Y),
 	write(Save,currLoc(X,Y)),write(Save,'.'),nl(Save),
-	ammo(Amunisi),
-	write(Save,ammo(Amunisi)),write(Save,'.'),nl(Save),
+	ammo(Nama,Amunisi),
+	write(Save,ammo(Nama,Amunisi)),write(Save,'.'),nl(Save),
 	forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),
 	forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
 	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
@@ -185,7 +185,7 @@ pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W))
 pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 
-equip_ammo(ammoRuby) :- ammo(A,X), A == 'ammoRuby', W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!. 
+equip_ammo(ammoRuby) :- ammo(A,X), A == 'ammoRuby', W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!.
 
 equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
