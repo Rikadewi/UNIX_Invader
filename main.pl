@@ -223,6 +223,7 @@ printLegend :-
 /*Random spawn player*/
 spawn_player:-
 	currLoc(X,Y),
+	set_seed(1), randomize,
 	random(1,11,Xnew),
 	random(1,11,Ynew),
 	retract(currLoc(X,Y)),
