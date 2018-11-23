@@ -7,6 +7,7 @@
 /*Rules*/
 start :-
 
+
 	write('███    █▄  ███▄▄▄▄    ▄█  ▀████    ▐████▀       ▄█  ███▄▄▄▄    ▄█    █▄     ▄████████ ████████▄     ▄████████    ▄████████    ▄████████ '), nl,
 	write('███    ███ ███▀▀▀██▄ ███    ███▌   ████▀       ███  ███▀▀▀██▄ ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███   ███    ███ '),nl,
 	write('███    ███ ███   ███ ███▌    ███  ▐███         ███▌ ███   ███ ███    ███   ███    ███ ███    ███   ███    █▀    ███    ███   ███    █▀  '),nl,
@@ -25,13 +26,14 @@ start :-
 	write('[2] Sparta Day 4'),nl,
 	write('[3] Ferguso'),nl,
 	write('Pilihan : '),
-	read(L),
+	read(L),nl,
 	write('Instruksi permainan'), nl,
 	do(help),
-	spawn_level(L), %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
+	spawn_player,
+	spawn_level(L),nl, %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
 	repeat,
 		write('>> '), /* Menandakan input */
-		read(Input), /*Meminta input dari usedr */
+		read(Input),nl, /*Meminta input dari usedr */
 
 		do(Input),nl, /*Menjadlankan do(Input) */
 		end_condition,
@@ -57,6 +59,7 @@ do(status) :- statuss,!.
 do(load) :-	write('load'), nl, !.
 do(_) :- write('Invalid Input'), nl, !.
 
+/*Kumpulan rule untuk save game*/
 savegame:-
 	open('savefile.txt',write,Save),
 	name(Nama_User),
@@ -71,14 +74,81 @@ savegame:-
 	write(Save,currLoc(X,Y)),write(Save,'.'),nl(Save),
 	ammo(Nama,Amunisi),
 	write(Save,ammo(Nama,Amunisi)),write(Save,'.'),nl(Save),
-	forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),
-	forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
+	totalenemy(Jumlah),
+	write(Save,totalenemy(Jumlah)),write(Save,'.'),nl(Save),
+	close(Save),
+	findall(I,inventory(I),ListInvent),
+	write_list_oneparam('savefile.txt',ListInvent,inventory),
+	findall(Nama_Object,objLoc(Nama_Object,OX,OY),ListObj),
+	findall(OX,objLoc(Nama_Object,OX,OY),ListObjX),
+	findall(OY,objLoc(Nama_Object,OX,OY),ListObjY),
+	write_list_threeparam('savefile.txt',ListObj,ListObjX,ListObjY,objLoc),
+	findall(Nama_Enemy,enemyLoc(Nama_Enemy,EX,EY),ListEnemy),
+	findall(EX,enemyLoc(Nama_Object,EX,EY),ListEnemyX),
+	findall(EY,enemyLoc(Nama_Object,EX,EY),ListEnemyY),
+	write_list_threeparam('savefile.txt',ListEnemy,ListEnemyX,ListEnemyY,enemyLoc),
+	findall(Dx,deadzone(Dx,Dy),ListDzoneX),
+	findall(Dy,deadzone(Dx,Dy),ListDzoneY),
+	write_list_twoparam('savefile.txt',ListDzoneX,ListDzoneY,deadzone).
+
+
+	/*forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),*/
+	/*forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
 	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
 	forall(deadzone(Dx,Dy),(write(Save,deadzone(Dx,Dy)),write(Save,'.'),nl(Save))),
-	close(Save).
+	*/
+
+writeData_One(_,[],Name) :- !.
+writeData_One(S,[X1|Tail],Name) :-
+	write(S,Name),
+	write(S,'('),
+	write(S,X1),
+	write(S,')'),
+	write(S,'.'),
+	nl(S),
+	writeData_One(S,Tail,Name).
+
+write_list_oneparam(NamaFile,L,Name) :-
+	open(NamaFile,append,S),
+	repeat,
+	writeData_One(S,L,Name),
+	close(S).
+
+writeData_three(_,[],[],[],Name) :- !.
+writeData_three(S,[X1|Tail1],[X2|Tail2],[X3|Tail3],Name) :-
+	write(S,Name),
+	write(S,'('),
+	write(S,(X1,X2,X3)),
+	write(S,')'),
+	write(S,'.'),
+	nl(S),
+	writeData_three(S,Tail1,Tail2,Tail3,Name).
+
+write_list_threeparam(NamaFile,L1,L2,L3,Name) :-
+	open(NamaFile,append,S),
+	repeat,
+	writeData_three(S,L1,L2,L3,Name),
+	close(S).
+
+writeData_two(_,[],[],Name) :- !.
+writeData_two(S,[X1|Tail1],[X2|Tail2],Name) :-
+	write(S,Name),
+	write(S,'('),
+	write(S,(X1,X2)),
+	write(S,')'),
+	write(S,'.'),
+	nl(S),
+	writeData_two(S,Tail1,Tail2,Name).
+
+write_list_twoparam(NamaFile,L1,L2,Name) :-
+	open(NamaFile,append,S),
+	repeat,
+	writeData_two(S,L1,L2,Name),
+	close(S).
+
 
 showhelp :-
-	name(X),
+	write('Nama Anda: '), name(X),
 	write(X), nl,
 	write('help'), nl,
 	write('quit'), nl,
@@ -107,6 +177,13 @@ printLegend :-
 	write('>> X: Deadzone'), nl, nl,
 	printmap(0,0),!.
 
+/*Random spawn player*/
+spawn_player:-
+	currLoc(X,Y),
+	random(1,11,Xnew),
+	random(1,11,Ynew),
+	retract(currLoc(X,Y)),
+	asserta(currLoc(Xnew,Ynew)),!.
 
 /*PRINT MAP*/
 
@@ -153,7 +230,7 @@ statuss :-
 	write('Armor : '), write(N),nl,
 	equip(W),
 	write('Weapon : '), write(W),nl,
-	ammo(A),
+	ammo(Nama,A),
 	write('Ammo : '), write(A),nl,
 	write('List Inventory : '),
 	findall(I,inventory(I),Listinvent), nl,
