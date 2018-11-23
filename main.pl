@@ -26,7 +26,7 @@ start :-
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
-		move_all_enemies,
+		
 		do(Input),nl, /*Menjadlankan do(Input) */
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
@@ -35,17 +35,17 @@ do(help) :- showhelp, !.
 do(quit) :- write('end game'), nl, !.
 do(map) :- printLegend, !.
 do(save) :-	savegame, !.
-do(n) :- north, !.
-do(s) :- south, !.
-do(w) :- west, !.
-do(e) :- east, !.
-do(drop(X)) :- drop(X), !.
+do(n) :- north, move_all_enemies,!.
+do(s) :- south, move_all_enemies,!.
+do(w) :- west, move_all_enemies,!.
+do(e) :- east, move_all_enemies,!.
+do(drop(X)) :- drop(X), move_all_enemies,!.
 
 /* Fungsi yang BELUM di implementasikan (edit do di bawah sesuai kebutuhan)*/
 do(look) :-	look_around, nl, !.
-do(take(X)):- takes(X),!.
-do(use(X)):- uses(X),!.
-do(attack) :-	write('attack'), nl, !.
+do(take(X)):- takes(X),move_all_enemies,!.
+do(use(X)):- uses(X),move_all_enemies,!.
+do(attack) :-	write('attack'), nl, move_all_enemies,!.
 do(status) :- statuss,!.
 do(load) :-	write('load'), nl, !.
 do(_) :- write('Invalid Input'), nl, !.
@@ -243,15 +243,15 @@ uses(X) :-
 /* Drop */
 
 /* Drop dari inventory*/
-drop(X) :- inventory(X),!, retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), !.
+drop(X) :- inventory(X),!, retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), write(X), write('berhasil di drop'), nl,!.
 
 
 /* Drop armor*/
-drop(X) :- armor(X,N), newarmor(X,N), !, retract(armor(X,N)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(armor(none,0)), !.
+drop(X) :- armor(X,N), newarmor(X,N), !, retract(armor(X,N)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(armor(none,0)), write(X), write('berhasil di drop'), nl, !.
 drop(X) :- armor(X,N),!, write('armor yang sudah berkurang tidak dapat didrop').
 
 /* Drop weapon*/
-drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)), !.
+drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)),  write(X), write('berhasil di drop'), nl,!.
 
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 

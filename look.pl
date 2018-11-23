@@ -2,7 +2,7 @@ is_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 
 
 look_around :-
-	write("Anda mengamati sekeliling dan melihat berbagai hal.."),nl,
+	write('Anda mengamati sekeliling dan melihat berbagai hal..'),nl,
 	currLoc(X,Y),
 
 	% write('Di bawah kamu ada : '),
@@ -23,7 +23,7 @@ look_around :-
 	W is X+1, A is Y,
 	lookat(W,A),
 	B is X+1, C is Y+1,
-	lookat(B,C),nl,move_all_enemies,!.
+	lookat(B,C),nl,!.
 
 	/*Implementasi lookat*/
 
