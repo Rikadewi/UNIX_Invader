@@ -78,7 +78,7 @@ spawn_level(3) :-
   random(1,18,C),
   spawn_enemy(C),
   random(1,18,D),
-  spawn_enemy(D),  
+  spawn_enemy(D),
   asserta(totalenemy(10)).
 
 
@@ -203,7 +203,7 @@ attack_enemy :-
 enemyaction(V,X,Y) :-
   currLoc(X,Y),
   random(0,2,C), %klo 1 kena, kalo 0 nggak
-  write('si '), write(V), write(' Berusaha menyerang dan mendapat '),write(C),nl.
+  write('si '), write(V), write(' Berusaha menyerang dan mendapat '),write(C),nl,
   hitplayer(V,C).
 
 enemyaction(V,X,Y):-
@@ -213,14 +213,14 @@ enemyaction(V,X,Y):-
 hitplayer(V,1) :-
   enemy(_,V,_,D),
   health(X),
-  X=<D,!,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),nl,!.
+  X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),nl,!.
 
 hitplayer(V,1) :-
   enemy(_,V,_,D),
   health(X),
-  X>D,!, Xnew is X-D,
+  X>D, Xnew is X-D,
   retract(health(X)), asserta(health(Xnew)),
-  write('Anda telah disakiti oleh '), write(V),nl,!,
+  write('Anda telah disakiti oleh '), write(V),nl,
   write('Nyawa berkurang sebesar '), write(D),nl,!.
 
 hitplayer(V,0) :-
