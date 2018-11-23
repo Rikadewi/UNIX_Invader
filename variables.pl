@@ -11,6 +11,7 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(objLoc/3). %(nama_object, x, y)
 :- dynamic(enemyLoc/3). %(nama_enemy, x, y)
 :- dynamic(name/1).
+:- dynamic(disDeadzone/1). %tebal deadzone saat ini
 :- dynamic(deadzone/2). %(x, y)
 :- dynamic(ammo/2).
 :- dynamic(totalenemy/1).
@@ -67,6 +68,8 @@ loc(2,1,'hutan').
 loc(2,2,'kbl').
 
 /*default deadzone*/
+disDeadzone(1).
+
 deadzone(9,1).
 deadzone(0,1).
 deadzone(0,2).
