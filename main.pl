@@ -28,6 +28,7 @@ start :-
 		read(Input), /*Meminta input dari usedr */
 
 		do(Input),nl, /*Menjadlankan do(Input) */
+		end_condition,
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
@@ -54,16 +55,16 @@ savegame:-
 	open('savefile.txt',write,Save),
 	name(Nama_User),
 	write(Save,name(Nama_User)),write(Save,'.'),nl(Save),
-	armor(Nama_Arm,Shield),
-	write(Save,armor(Nama_Arm,Shield)),write(Save,'.'),nl(Save),
+	armor(Nama_Arm),
+	write(Save,armor(Nama_Arm)),write(Save,'.'),nl(Save),
 	health(Heal),
 	write(Save,health(Heal)),write(Save,'.'),nl(Save),
 	equip(Eq),
 	write(Save,equip(Eq)),write(Save,'.'),nl(Save),
 	currLoc(X,Y),
 	write(Save,currLoc(X,Y)),write(Save,'.'),nl(Save),
-	ammo(Amunisi),
-	write(Save,ammo(Amunisi)),write(Save,'.'),nl(Save),
+	ammo(Nama,Amunisi),
+	write(Save,ammo(Nama,Amunisi)),write(Save,'.'),nl(Save),
 	forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),
 	forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
 	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
@@ -102,14 +103,13 @@ printLegend :-
 
 
 /*PRINT MAP*/
-is_loc_valid(X,Y) :- X<11, Y<11, X>0, Y>0, forall(deadzone(X1,Y1), X =:= X1), forall(deadzone(X2,Y2), Y2 =:= Y), !.
 
+printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(11,11) :- write('X '), nl, !.
 printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
 printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 printmap(X,0) :- write('X '), printmap(X,1), !.
-printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon_ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
@@ -120,23 +120,30 @@ printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 
 /*MOVEMENT*/
 
-north :- currLoc(X,Y), X == 1, !, write('di paling atas'), nl, !.
+north :- currLoc(X,Y), X == 0, !, write('di paling atas'), nl, minushp, !.
+north :- currLoc(X,Y), X1 is X-1, deadzone(X1,Y), !,retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 north :- currLoc(X,Y), X1 is X-1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-south :- currLoc(X,Y), X == 10, !, write('di paling bawah'), nl, !.
+south :- currLoc(X,Y), X == 11, !, write('di paling bawah'), nl, minushp, !.
+south :- currLoc(X,Y), X1 is X+1, deadzone(X1,Y), !, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 south :- currLoc(X,Y), X1 is X+1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-west :- currLoc(X,Y), Y == 1, !, write('di paling kiri'), nl, !.
+west :- currLoc(X,Y), Y == 0, !, write('di paling kiri'), nl, minushp, !.
+west :- currLoc(X,Y), Y1 is Y-1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
-east :- currLoc(X,Y), Y == 10, !, write('di paling kanan'), nl, !.
+east :- currLoc(X,Y), Y == 11, !, write('di paling kanan'), nl, minushp, !.
+east :- currLoc(X,Y), Y1 is Y+1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
+
+minushp :- health(X),  X<10, !, retract(health(X)), asserta(health(0)), write('DANGER! DEADZONE!'), nl, !.
+minushp :- health(X), retract(health(X)), X1 is X-10, asserta(health(X1)), write('DANGER! DEADZONE!'), nl, !.
 
 /* Status*/
 statuss :-
 	health(Y),
 	write('Health : '), write(Y),nl,
-	armor(Z,N),
+	armor(N),
 	write('Armor : '), write(N),nl,
 	equip(W),
 	write('Weapon : '), write(W),nl,
@@ -150,7 +157,7 @@ printlist([]).
 printlist([H|T]) :- write(H), nl, printlist(T),!.
 
 
-equip_armor(jahim) :- newarmor(jahim,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+/* equip_armor(jahim) :- newarmor(jahim,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
 equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
 equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X<50, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
 equip_armor(jahim) :- newarmor(jahim,N), armor(sweater,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
@@ -164,8 +171,13 @@ equip_armor(sweater) :- newarmor(sweater,N), armor(A,X), X=0, retract(armor(A,X)
 equip_armor(sweater) :- newarmor(sweater,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
 equip_armor(sweater) :- newarmor(sweater,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
 equip_armor(sweater) :- newarmor(sweater,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(jamal,X), X<25, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(jamal,X), X<25, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!. */
 
+equip_armor(jahim) :- newarmor(jahim,N), armor(X), retract(armor(X)), asserta(armor(N)), write('Armor : '),write(N),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(X), X+N > 100,retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(X), W is X+N ,retract(armor(X)),asserta(armor(W)), write('Armor : '),write(W),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(X), X+N > 100,retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(X), W is X+N ,retract(armor(X)),asserta(armor(W)), write('Armor : '),write(W),nl,!.
 
 pakai_obat(crisbar) :- health(X), retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
@@ -173,7 +185,8 @@ pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W))
 pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 
-equip_ammo(ammo) :- ammo(X), W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!.
+equip_ammo(ammoRuby) :- ammo(A,X), A == 'ammoRuby', W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!.
+
 
 equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
@@ -263,10 +276,12 @@ drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 /*END CONDITION*/
 end(quit) :- halt, !.
 
-end_condition(_) :-
-  hp(0),
-  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl,!.
-
-end_condition(_) :-
-  totalenemy(0),
-  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl,!.
+end_condition :-
+  health(0), !,
+  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl, end(quit), !.
+/*
+end_condition :-
+  totalenemy(0), !,
+  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl, end(quit), !.
+*/
+ end_condition.
