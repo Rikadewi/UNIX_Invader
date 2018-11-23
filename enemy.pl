@@ -52,6 +52,10 @@ spawn_level(2) :-
   spawn_enemy(Z),
   random(1,18,U),
   spawn_enemy(U),
+  random(1,18,UX),
+  spawn_enemy(UX),
+  random(1,18,UZ),
+  spawn_enemy(UZ),
   asserta(totalenemy(6)).
 
 spawn_level(3) :-
@@ -63,7 +67,19 @@ spawn_level(3) :-
   spawn_enemy(Z),
   random(1,18,U),
   spawn_enemy(U),
-  asserta(totalenemy(6)).
+  random(1,18,V),
+  spawn_enemy(V),
+  random(1,18,W),
+  spawn_enemy(W),
+  random(1,18,A),
+  spawn_enemy(A),
+  random(1,18,B),
+  spawn_enemy(B),
+  random(1,18,C),
+  spawn_enemy(C),
+  random(1,18,D),
+  spawn_enemy(D),  
+  asserta(totalenemy(10)).
 
 
 
