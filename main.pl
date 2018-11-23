@@ -20,9 +20,15 @@ start :-
 	write('Masukkan Nama (dimulai huruf kecil): '),
 	read(X),
 	asserta(name(X)),
+	write('Pilih Tingkat stress yang anda inginkan : '),nl,
+	write('[1] Kentang'),nl,
+	write('[2] Sparta Day 4'),nl,
+	write('[3] Ferguso'),nl,
+	write('Pilihan : '),
+	read(L),
 	write('Instruksi permainan'), nl,
 	do(help),
-	spawn,
+	spawn_level(L), %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
