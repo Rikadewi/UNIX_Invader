@@ -13,7 +13,7 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(name/1).
 :- dynamic(deadzone/2). %(x, y)
 :- dynamic(ammo/2).
-:- dynamic(weapon_ammo/2).
+/*:- dynamic(total_ammo/2).*/
 
 /*Static Variable*/
 
@@ -24,9 +24,8 @@ currLoc(1,1).
 inventory(nasjep).
 inventory(kunciC).
 inventory(jahim).
-
-equip(batuRuby).
-ammo(ammoRuby, 5).
+equip(batuRuby). 
+ammo(0).
 
 /*default object*/
 obj(armor, jahim).
@@ -38,13 +37,11 @@ obj(medicine,crisbar).
 obj(weapon,kunciC).
 obj(weapon,batuRuby).
 obj(weapon,ularPython).
+obj(ammoSenjata, ammoC).
+obj(ammoSenjata, ammoRuby).
+obj(ammoSenjata, ammoPython).
 
-/*obj(weapon_ammo,ammo). 
- obj(newammo, ) */
-obj(weapammo, ammoC).
-obj(weapammo, ammoRuby).
-obj(weapammo, ammoPython).
-
+/* Definisi objek */
 newarmor(jahim, 100).
 newarmor(jamal, 50).
 newarmor(sweater, 25).
@@ -53,9 +50,15 @@ newammo(ammoruby, 5).
 newammo(ammoC, 5).
 newammo(ammoPython, 5).
 
-weapon_ammo(kunciC, 5).
-weapon_ammo(batuRuby, 5).
-weapon_ammo(ularPython, 5).
+weapon_ammo(kunciC, ammoC).
+weapon_ammo(batuRuby, ammoRuby).
+weapon_ammo(ularPython, ammoPyhton).
+weapon_ammo(none, ammonone).
+
+ammo(ammoC, 0).
+ammo(ammoRuby, 0).
+ammo(ammoPython, 0).
+ammo(ammonone, 0).
 
 damage(kunciC,20).
 damage(batuRuby,30).

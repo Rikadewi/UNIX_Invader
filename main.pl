@@ -1,5 +1,5 @@
 /*Included files */
-:-include('variables.pl').
+:-include('variablesedited.pl').
 :-include('enemy.pl').
 :-include('look.pl').
 /*badur was here*/
@@ -140,7 +140,7 @@ statuss :-
 	write('Armor : '), write(N),nl,
 	equip(W),
 	write('Weapon : '), write(W),nl,
-	/*weapon_ammo(W, A), */ ammo(B, A),
+	weapon_ammo(W, B), ammo(B, A)/*, ammo(A)*/,
 	write('Ammo : '), write(A),nl,
 	write('List Inventory : '),
 	findall(I,inventory(I),Listinvent), nl,
@@ -178,39 +178,41 @@ pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W))
 pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 
-add_ammo(ammoC) :- weapon_ammo(kunciC,X), newammo(ammoC, N), W is X + N, retract(weapon_ammo(kunciC, X)), asserta(weapon_ammo(kunciC, W)), retract(ammo(ammoC, N)), asserta(ammo(ammoC, W)), write('Ammo KunciC-mu sekarang adalah : '), write(W),nl,!.
-add_ammo(ammoRuby) :- weapon_ammo(batuRuby,X), newammo(ammoRuby, N), W is X + N, retract(weapon_ammo(batuRuby, X)), asserta(weapon_ammo(batuRuby, W)), retract(ammo(batuRuby, N)), asserta(ammo(batuRuby, W)), write('Ammo batuRuby-mu sekarang adalah : '), write(W),nl,!.
-add_ammo(ammoPython) :- weapon_ammo(ularPython,X), newammo(ammoPython, N), W is X + N, retract(weapon_ammo(ularPython, X)), asserta(weapon_ammo(ularPython, W)), retract(ammo(ularPython, N)), asserta(ammo(ularPython, W)), write('Ammo ularPython-mu sekarang adalah : '), write(W),nl,!.
+add_ammo(ammoC) :- newammo(ammoC, N), ammo(ammoC, X), W is X + N, retract(ammo(ammoC, X)), asserta(ammo(ammoC, W)), write('Total ammoC adalah : '), write(W),nl,!.
+add_ammo(ammoRuby) :- newammo(ammoRuby, N), ammo(ammoRuby, X), W is X + N, retract(ammo(ammoRuby, X)), asserta(ammo(ammoRuby, W)), write('Total ammoRuby adalah : '), write(W),nl,!.
+add_ammo(ammoPython) :- newammo(ammoPython, N), ammo(ammoPython, X), W is X + N, retract(ammo(ammoPython, X)), asserta(ammo(ammoPython, W)), write('Total ammoPython adalah : '), write(W),nl,!.
 
-equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), Z>0, ammo(A, Z), asserta(inventory(A)), retract(equip(X)), retract(ammo(A, Z)), 
-						weapon_ammo(kunciC, N), asserta(equip(kunciC)), asserta(ammo(ammoC, N)), 
+equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)), 
+						weapon_ammo(kunciC, B), ammo(B, J), asserta(equip(kunciC)), 
 						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl, 
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.
 
-equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), Z == 0, retract(equip(X)), retract(ammo(A, Z)), 
-						weapon_ammo(kunciC, N), asserta(equip(kunciC)), asserta(ammo(ammoC, N)), 
+/*equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, N), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)), 
+						weapon_ammo(kunciC, B), total_ammo(B, J), asserta(equip(kunciC)), asserta(ammo(J)), 
 						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl, 
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
+
 						
-equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), Z>0, ammo(A, Z), asserta(inventory(A)), retract(equip(X)), retract(ammo(A, Z)), 
-						weapon_ammo(batuRuby, N), asserta(equip(batuRuby)), asserta(ammo(ammoRuby, N)), 
+equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),  
+						weapon_ammo(batuRuby, B), ammo(B, J), asserta(equip(batuRuby)),  
 						write('senjata yang dipakai : batuRuby (Damage attack: 30)'),nl, 
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.
 
-equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), Z == 0, retract(equip(X)), retract(ammo(A, Z)), 
-						weapon_ammo(batuRuby, N), asserta(equip(batuRuby)), asserta(ammo(ammoRuby, N)), 
-						write('senjata yang dipakai : kunciC (Damage attack: 30)'),nl, 
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+/*equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, N), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)), 
+						weapon_ammo(batuRuby, B), total_ammo(B, J), asserta(equip(batuRuby)), asserta(ammo(J)), 
+						write('senjata yang dipakai : batuRuby (Damage attack: 30)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
 
-equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), Z>0, ammo(A, Z), asserta(inventory(A)), retract(equip(X)), retract(ammo(A, Z)), 
-						weapon_ammo(ularPython, N), asserta(equip(ularPython)), asserta(ammo(ammoPython, N)), 
-						write('senjata yang dipakai : batuRuby (Damage attack: 40)'),nl, 
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)), retract(ammo(N)), 
+						weapon_ammo(ularPython, B), ammo(B, J), asserta(equip(ularPython)),  
+						write('senjata yang dipakai : ularPython (Damage attack: 40)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.
 
-equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), Z == 0, retract(equip(X)), retract(ammo(A, Z)), 
-						weapon_ammo(ularPython, N), asserta(equip(ularPython)), asserta(ammo(ammoPython, N)), 
-						write('senjata yang dipakai : kunciC (Damage attack: 40)'),nl, 
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+
+/*equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, N), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)), 
+						weapon_ammo(ularPython, B), total_ammo(B, J), asserta(equip(ularPython)), asserta(ammo(J)), 
+						write('senjata yang dipakai : ularPython (Damage attack: 40)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
 						
 /*equip_weapon(kunciC) :- equip(X), weapon_ammo(kunciC, N), ammo(N), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
@@ -264,9 +266,15 @@ uses(X) :-
 	retract(inventory(X)),!.
 /* Use Ammo */
 uses(X) :-
-	obj(weapammo,X),
+	obj(ammoSenjata,X),
 	inventory(X),
 	add_ammo(X),
+	retract(inventory(X)),!.
+/* Use Armor */
+uses(X) :-
+	obj(armor,X),
+	inventory(X),
+	equip_armor(X),
 	retract(inventory(X)),!.
 /* Use weapon*/
 uses(X) :-
