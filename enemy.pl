@@ -185,7 +185,7 @@ attack_enemy :-
   retract(enemyLoc(V,X,Y)),
   retract(totalenemy(N)),
   retract(ammo(WA)),
-  WAnew is WA-1
+  WAnew is WA-1,
   Nnew is N-1,
   asserta(ammo(WAnew)),
   asserta(totalenemy(Nnew)).
@@ -225,8 +225,3 @@ hitplayer(V,1) :-
 
 hitplayer(V,0) :-
   write('Anda berhasil menghindarnya!'),nl.
-
-
-
-
-hitplayer(V,2) :-

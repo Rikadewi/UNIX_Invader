@@ -67,7 +67,7 @@ loc(2,1,'hutan').
 loc(2,2,'kbl').
 
 /*default deadzone*/
-deadzone(9,1).
+deadzone(0,0).
 deadzone(0,1).
 deadzone(0,2).
 deadzone(0,3).
