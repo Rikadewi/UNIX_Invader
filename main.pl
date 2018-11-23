@@ -56,7 +56,7 @@ do(take(X)):- takes(X),move_all_enemies,!.
 do(use(X)):- uses(X),move_all_enemies,!.
 do(attack) :-	attack_enemy, move_all_enemies,!.
 do(status) :- statuss,!.
-do(load) :-	write('load'), nl, !.
+do(load) :-	loadgame, nl, !.
 do(_) :- write('Invalid Input'), nl, !.
 
 /*Kumpulan rule untuk save game*/
@@ -98,6 +98,7 @@ savegame:-
 	forall(deadzone(Dx,Dy),(write(Save,deadzone(Dx,Dy)),write(Save,'.'),nl(Save))),
 	*/
 
+/*Bagian rekursif untuk save game*/
 writeData_One(_,[],Name) :- !.
 writeData_One(S,[X1|Tail],Name) :-
 	write(S,Name),
@@ -146,6 +147,48 @@ write_list_twoparam(NamaFile,L1,L2,Name) :-
 	writeData_two(S,L1,L2,Name),
 	close(S).
 
+/*Bagian Load Game*/
+loadgame:-
+	health(H),
+	armor(A),
+	currLoc(Px,Py),
+	equip(Eq),
+	name(N),
+	ammo(Nammo,Mag),
+	totalenemy(E),
+	retractall(health(H)),
+	retractall(armor(A)),
+	retractall(currLoc(Px,Py)),
+	retractall(equip(Eq)),
+	retractall(name(N)),
+	retractall(ammo(Nammo,Mag)),
+	retractall(totalenemy(E)),
+	remove_all_obj,
+	remove_all_deadzone,
+	remove_all_invent,
+	remove_all_enemies,
+	open('savefile.txt',read,Load),
+	load_all(Load),
+	close(Load).
+
+/*Rule pendukung untuk load game*/
+remove_all_obj :-
+	objLoc(_,_,_),retractall(objLoc(_,_,_)),!.
+remove_all_obj :- !.
+
+remove_all_deadzone :-
+	deadzone(_,_),retractall(deadzone(_,_)),!.
+remove_all_deadzone:-!.
+
+remove_all_invent :-
+	inventory(_),retractall(inventory(_)),!.
+remove_all_invent :-!.
+
+load_all(Load):-
+	repeat,
+		read(Load,L),
+		asserta(L),
+		at_end_of_stream(Load).
 
 showhelp :-
 	write('Nama Anda: '), name(X),
@@ -224,6 +267,8 @@ minushp :- health(X), retract(health(X)), X1 is X-10, asserta(health(X1)), write
 
 /* Status*/
 statuss :-
+	name(X),
+	write('Nama : '), write(X),nl,
 	health(Y),
 	write('Health : '), write(Y),nl,
 	armor(N),
