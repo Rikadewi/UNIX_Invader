@@ -150,9 +150,22 @@ printlist([]).
 printlist([H|T]) :- write(H), nl, printlist(T),!.
 
 
-equip_armor(jahim) :- newarmor(jahim,N), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayeSparta,N), retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X<50, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), armor(sweater,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), armor(sweater,X), X<25, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(sweater,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(sweater,X), X<25, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(sweater) :- newarmor(sweater,N), armor(jamal,X), X<25, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+
 
 pakai_obat(crisbar) :- health(X), retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
@@ -160,22 +173,12 @@ pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W))
 pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 
+equip_ammo(ammo) :- ammo(X), W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!. 
+
 equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
 equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!.
 equip_weapon(laptop) :- equip(X), retract(equip(X)),asserta(equip(laptop)), write('senjata yang dipakai : Laptop (Damage attack : 100 !!! Ngeri bosque)'),nl,!.
-/*equip_ammo(ammoC) :- equip(kunciC), ammo(X), X > 100,retract(health(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
-equip_ammo(ammoC) :- equip(kunciC), ammo(X), W is X+5,retract(ammo(X)),asserta(hp(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.*/
-
-/* Take ammo */
-/* takes(X):-
-	obj(ammo,X),
-	objLoc(ammo,X,Y,Z),
-	ammo(X,A),
-	currLoc(Y,Z),
-	asserta(inventory(X)),
-	retract(objLoc(Jenis,X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl, move_all_enemies,!. */
 
 /* Take armor */
 takes(X):-
@@ -187,15 +190,15 @@ takes(X):-
 	write('item '), write(X),write(' diambil'), nl, /*move_all_enemies,*/!.
 
 /* Take weapon */
-takes(X):-
+	takes(X):-
 	obj(weapon,X),
 	objLoc(X,Y,Z),
 	currLoc(Y,Z),!,
 	asserta(inventory(X)),
 	retract(objLoc(X,Y,Z)),
-	write('item '), write(X),write(' diambil'), nl,/*move_all_enemies,*/!.
+	write('item '), write(X),write(' diambil'), nl, write('kamu siap untuk bertempur!'),nl,/*move_all_enemies,*/!.
 
-/* Take another thing */
+/* Take ammo & medicine */
 takes(X):-
 	obj(Jenis,X),
 	objLoc(X,Y,Z),
@@ -212,7 +215,13 @@ takes(X):-
 uses(X) :-
 	obj(medicine,X),
 	inventory(X),
-	pakai_obat(X),
+	equip_ammo(X),
+	retract(inventory(X)),!.
+/* Use Ammo */
+uses(X) :-
+	obj(gun_ammo,X),
+	inventory(X),
+	equip_ammo(X),
 	retract(inventory(X)),!.
 /* Use weapon*/
 uses(X) :-
