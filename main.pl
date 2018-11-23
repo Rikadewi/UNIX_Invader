@@ -28,6 +28,7 @@ start :-
 		read(Input), /*Meminta input dari usedr */
 		
 		do(Input),nl, /*Menjadlankan do(Input) */
+		end_condition,
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
@@ -102,14 +103,13 @@ printLegend :-
 
 
 /*PRINT MAP*/
-is_loc_valid(X,Y) :- X<11, Y<11, X>0, Y>0, forall(deadzone(X1,Y1), X =:= X1), forall(deadzone(X2,Y2), Y2 =:= Y), !.
 
+printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(11,11) :- write('X '), nl, !.
 printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
 printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 printmap(X,0) :- write('X '), printmap(X,1), !.
-printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon_ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
@@ -120,17 +120,24 @@ printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 
 /*MOVEMENT*/
 
-north :- currLoc(X,Y), X == 1, !, write('di paling atas'), nl, !.
+north :- currLoc(X,Y), X == 0, !, write('di paling atas'), nl, minushp, !.
+north :- currLoc(X,Y), X1 is X-1, deadzone(X1,Y), !,retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 north :- currLoc(X,Y), X1 is X-1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-south :- currLoc(X,Y), X == 10, !, write('di paling bawah'), nl, !.
+south :- currLoc(X,Y), X == 11, !, write('di paling bawah'), nl, minushp, !.
+south :- currLoc(X,Y), X1 is X+1, deadzone(X1,Y), !, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 south :- currLoc(X,Y), X1 is X+1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-west :- currLoc(X,Y), Y == 1, !, write('di paling kiri'), nl, !.
+west :- currLoc(X,Y), Y == 0, !, write('di paling kiri'), nl, minushp, !.
+west :- currLoc(X,Y), Y1 is Y-1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
-east :- currLoc(X,Y), Y == 10, !, write('di paling kanan'), nl, !.
+east :- currLoc(X,Y), Y == 11, !, write('di paling kanan'), nl, minushp, !.
+east :- currLoc(X,Y), Y1 is Y+1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
+
+minushp :- health(X),  X<10, !, retract(health(X)), asserta(health(0)), write('DANGER! DEADZONE!'), nl, !.
+minushp :- health(X), retract(health(X)), X1 is X-10, asserta(health(X1)), write('DANGER! DEADZONE!'), nl, !.
 
 /* Status*/
 statuss :-
@@ -268,10 +275,12 @@ drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 /*END CONDITION*/
 end(quit) :- halt, !.
 
-end_condition(_) :-
-  hp(0),
-  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl,!.
-
-end_condition(_) :-
-  totalenemy(0),
-  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl,!.
+end_condition :-
+  health(0), !,
+  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl, end(quit), !.
+/*
+end_condition :-
+  totalenemy(0), !,
+  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl, end(quit), !.
+*/
+ end_condition.
