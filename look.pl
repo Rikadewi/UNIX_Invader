@@ -4,30 +4,8 @@ is_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 look_around :-
 	write('Anda mengamati sekeliling dan melihat berbagai hal..'),nl,
 	currLoc(X,Y),
-	objLoc(Z,X,Y),!,
-	write('Kamu sedang menginjak : '), write(Z),nl,
-	I is X-1, J is Y-1,
-	lookat(I,J),
-	K is X-1, L is Y,
-	lookat(K,L),
-	M is X-1, N is Y+1,
-	lookat(M,N),nl,
-	O is X, P is Y-1,
-	lookat(O,P),
-	Q is X, R is Y,
-	lookat(Q,R),
-	S is X, T is Y+1,
-	lookat(S,T),nl,
-	U is X+1, V is Y-1,
-	lookat(U,V),
-	W is X+1, A is Y,
-	lookat(W,A),
-	B is X+1, C is Y+1,
-	lookat(B,C),nl,!.
 
-look_around :-
-	currLoc(X,Y),
-	write('Kamu sedang menginjak Tanah '), nl,
+	% write('Di bawah kamu ada : '),
 	I is X-1, J is Y-1,
 	lookat(I,J),
 	K is X-1, L is Y,
@@ -79,7 +57,6 @@ lookat(X,Y) :-
 lookat(X,Y) :-
 	currLoc(X,Y),
 	write('P '),!.
-
 
 lookat(X,Y) :-
 	\+is_valid(X,Y),

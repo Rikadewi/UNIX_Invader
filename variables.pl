@@ -13,8 +13,7 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(name/1).
 :- dynamic(deadzone/2). %(x, y)
 :- dynamic(ammo/2).
-:- dynamic(totalenemy/1).
-
+:- dynamic(weapon_ammo/2).
 
 /*Static Variable*/
 
@@ -24,11 +23,10 @@ currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
 inventory(nasjep).
 inventory(kunciC).
-inventory(ammo).
 inventory(jahim).
 
 equip(batuRuby).
-ammo(ammoRuby, 4).
+ammo(ammoRuby, 5).
 
 /*default object*/
 obj(armor, jahim).
@@ -40,7 +38,12 @@ obj(medicine,crisbar).
 obj(weapon,kunciC).
 obj(weapon,batuRuby).
 obj(weapon,ularPython).
-obj(weapon_ammo,ammo).
+
+/*obj(weapon_ammo,ammo). 
+ obj(newammo, ) */
+obj(weapammo, ammoC).
+obj(weapammo, ammoRuby).
+obj(weapammo, ammoPython).
 
 newarmor(jahim, 100).
 newarmor(jamal, 50).
@@ -50,13 +53,20 @@ newammo(ammoruby, 5).
 newammo(ammoC, 5).
 newammo(ammoPython, 5).
 
+weapon_ammo(kunciC, 5).
+weapon_ammo(batuRuby, 5).
+weapon_ammo(ularPython, 5).
+
 damage(kunciC,20).
 damage(batuRuby,30).
 damage(ularPython,40).
 
 /*default lokasi object*/
 objLoc(kunciC, 3, 4).
-objLoc(ammo, 8, 9).
+objLoc(batuRuby, 5, 4).
+objLoc(ammoC, 8, 9).
+objLoc(ammoC, 1, 1).
+objLoc(ammoRuby, 6, 9).
 objLoc(ekado, 1, 4).
 objLoc(sweater, 6, 8).
 
@@ -68,47 +78,5 @@ loc(2,2,'kbl').
 
 /*default deadzone*/
 deadzone(9,1).
-deadzone(0,1).
-deadzone(0,2).
-deadzone(0,3).
-deadzone(0,4).
-deadzone(0,5).
-deadzone(0,6).
-deadzone(0,7).
-deadzone(0,8).
-deadzone(0,9).
-deadzone(0,10).
-deadzone(0,11).
-deadzone(11,1).
-deadzone(11,2).
-deadzone(11,3).
-deadzone(11,4).
-deadzone(11,5).
-deadzone(11,6).
-deadzone(11,7).
-deadzone(11,8).
-deadzone(11,9).
-deadzone(11,10).
-deadzone(11,11).
-deadzone(1,0).
-deadzone(2,0).
-deadzone(3,0).
-deadzone(4,0).
-deadzone(5,0).
-deadzone(6,0).
-deadzone(7,0).
-deadzone(8,0).
-deadzone(9,0).
-deadzone(10,0).
-deadzone(11,0).
-deadzone(1,11).
-deadzone(2,11).
-deadzone(3,11).
-deadzone(4,11).
-deadzone(5,11).
-deadzone(6,11).
-deadzone(7,11).
-deadzone(8,11).
-deadzone(9,11).
-deadzone(10,11).
-deadzone(11,11).
+
+/*default deadzone*/

@@ -20,21 +20,14 @@ start :-
 	write('Masukkan Nama (dimulai huruf kecil): '),
 	read(X),
 	asserta(name(X)),
-	write('Pilih Tingkat stress yang anda inginkan : '),nl,
-	write('[1] Kentang'),nl,
-	write('[2] Sparta Day 4'),nl,
-	write('[3] Ferguso'),nl,
-	write('Pilihan : '),
-	read(L),
 	write('Instruksi permainan'), nl,
 	do(help),
-	spawn_level(L), %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
+	spawn,
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
-
+		
 		do(Input),nl, /*Menjadlankan do(Input) */
-		end_condition,
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
@@ -52,7 +45,7 @@ do(drop(X)) :- drop(X), move_all_enemies,!.
 do(look) :-	look_around, nl, !.
 do(take(X)):- takes(X),move_all_enemies,!.
 do(use(X)):- uses(X),move_all_enemies,!.
-do(attack) :-	attack_enemy, move_all_enemies,!.
+do(attack) :-	write('attack'), nl, move_all_enemies,!.
 do(status) :- statuss,!.
 do(load) :-	write('load'), nl, !.
 do(_) :- write('Invalid Input'), nl, !.
@@ -61,16 +54,16 @@ savegame:-
 	open('savefile.txt',write,Save),
 	name(Nama_User),
 	write(Save,name(Nama_User)),write(Save,'.'),nl(Save),
-	armor(Nama_Arm),
-	write(Save,armor(Nama_Arm)),write(Save,'.'),nl(Save),
+	armor(Nama_Arm,Shield),
+	write(Save,armor(Nama_Arm,Shield)),write(Save,'.'),nl(Save),
 	health(Heal),
 	write(Save,health(Heal)),write(Save,'.'),nl(Save),
 	equip(Eq),
 	write(Save,equip(Eq)),write(Save,'.'),nl(Save),
 	currLoc(X,Y),
 	write(Save,currLoc(X,Y)),write(Save,'.'),nl(Save),
-	ammo(Nama,Amunisi),
-	write(Save,ammo(Nama,Amunisi)),write(Save,'.'),nl(Save),
+	ammo(Amunisi),
+	write(Save,ammo(Amunisi)),write(Save,'.'),nl(Save),
 	forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),
 	forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
 	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
@@ -109,13 +102,14 @@ printLegend :-
 
 
 /*PRINT MAP*/
+is_loc_valid(X,Y) :- X<11, Y<11, X>0, Y>0, forall(deadzone(X1,Y1), X =:= X1), forall(deadzone(X2,Y2), Y2 =:= Y), !.
 
-printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(11,11) :- write('X '), nl, !.
 printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
 printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 printmap(X,0) :- write('X '), printmap(X,1), !.
+printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon_ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
@@ -126,24 +120,17 @@ printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 
 /*MOVEMENT*/
 
-north :- currLoc(X,Y), X == 0, !, write('di paling atas'), nl, minushp, !.
-north :- currLoc(X,Y), X1 is X-1, deadzone(X1,Y), !,retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
+north :- currLoc(X,Y), X == 1, !, write('di paling atas'), nl, !.
 north :- currLoc(X,Y), X1 is X-1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-south :- currLoc(X,Y), X == 11, !, write('di paling bawah'), nl, minushp, !.
-south :- currLoc(X,Y), X1 is X+1, deadzone(X1,Y), !, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
+south :- currLoc(X,Y), X == 10, !, write('di paling bawah'), nl, !.
 south :- currLoc(X,Y), X1 is X+1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-west :- currLoc(X,Y), Y == 0, !, write('di paling kiri'), nl, minushp, !.
-west :- currLoc(X,Y), Y1 is Y-1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
+west :- currLoc(X,Y), Y == 1, !, write('di paling kiri'), nl, !.
 west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
-east :- currLoc(X,Y), Y == 11, !, write('di paling kanan'), nl, minushp, !.
-east :- currLoc(X,Y), Y1 is Y+1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
+east :- currLoc(X,Y), Y == 10, !, write('di paling kanan'), nl, !.
 east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
-
-minushp :- health(X),  X<10, !, retract(health(X)), asserta(health(0)), write('DANGER! DEADZONE!'), nl, !.
-minushp :- health(X), retract(health(X)), X1 is X-10, asserta(health(X1)), write('DANGER! DEADZONE!'), nl, !.
 
 /* Status*/
 statuss :-
@@ -153,7 +140,7 @@ statuss :-
 	write('Armor : '), write(N),nl,
 	equip(W),
 	write('Weapon : '), write(W),nl,
-	ammo(A),
+	/*weapon_ammo(W, A), */ ammo(B, A),
 	write('Ammo : '), write(A),nl,
 	write('List Inventory : '),
 	findall(I,inventory(I),Listinvent), nl,
@@ -191,13 +178,44 @@ pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W))
 pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 
-equip_ammo(ammoRuby) :- ammo(A,X), A == 'ammoRuby', W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!.
+add_ammo(ammoC) :- weapon_ammo(kunciC,X), newammo(ammoC, N), W is X + N, retract(weapon_ammo(kunciC, X)), asserta(weapon_ammo(kunciC, W)), retract(ammo(ammoC, N)), asserta(ammo(ammoC, W)), write('Ammo KunciC-mu sekarang adalah : '), write(W),nl,!.
+add_ammo(ammoRuby) :- weapon_ammo(batuRuby,X), newammo(ammoRuby, N), W is X + N, retract(weapon_ammo(batuRuby, X)), asserta(weapon_ammo(batuRuby, W)), retract(ammo(batuRuby, N)), asserta(ammo(batuRuby, W)), write('Ammo batuRuby-mu sekarang adalah : '), write(W),nl,!.
+add_ammo(ammoPython) :- weapon_ammo(ularPython,X), newammo(ammoPython, N), W is X + N, retract(weapon_ammo(ularPython, X)), asserta(weapon_ammo(ularPython, W)), retract(ammo(ularPython, N)), asserta(ammo(ularPython, W)), write('Ammo ularPython-mu sekarang adalah : '), write(W),nl,!.
 
+equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), Z>0, ammo(A, Z), asserta(inventory(A)), retract(equip(X)), retract(ammo(A, Z)), 
+						weapon_ammo(kunciC, N), asserta(equip(kunciC)), asserta(ammo(ammoC, N)), 
+						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
 
-equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
+equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), Z == 0, retract(equip(X)), retract(ammo(A, Z)), 
+						weapon_ammo(kunciC, N), asserta(equip(kunciC)), asserta(ammo(ammoC, N)), 
+						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+						
+equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), Z>0, ammo(A, Z), asserta(inventory(A)), retract(equip(X)), retract(ammo(A, Z)), 
+						weapon_ammo(batuRuby, N), asserta(equip(batuRuby)), asserta(ammo(ammoRuby, N)), 
+						write('senjata yang dipakai : batuRuby (Damage attack: 30)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+
+equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), Z == 0, retract(equip(X)), retract(ammo(A, Z)), 
+						weapon_ammo(batuRuby, N), asserta(equip(batuRuby)), asserta(ammo(ammoRuby, N)), 
+						write('senjata yang dipakai : kunciC (Damage attack: 30)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+
+equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), Z>0, ammo(A, Z), asserta(inventory(A)), retract(equip(X)), retract(ammo(A, Z)), 
+						weapon_ammo(ularPython, N), asserta(equip(ularPython)), asserta(ammo(ammoPython, N)), 
+						write('senjata yang dipakai : batuRuby (Damage attack: 40)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+
+equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), Z == 0, retract(equip(X)), retract(ammo(A, Z)), 
+						weapon_ammo(ularPython, N), asserta(equip(ularPython)), asserta(ammo(ammoPython, N)), 
+						write('senjata yang dipakai : kunciC (Damage attack: 40)'),nl, 
+						write('Ammo yang kamu punya untuk senjata ini adalah '), write(N),nl,!.
+						
+/*equip_weapon(kunciC) :- equip(X), weapon_ammo(kunciC, N), ammo(N), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
-equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!.
-equip_weapon(laptop) :- equip(X), retract(equip(X)),asserta(equip(laptop)), write('senjata yang dipakai : Laptop (Damage attack : 100 !!! Ngeri bosque)'),nl,!.
+equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!. */
+/* equip_weapon(laptop) :- equip(X), retract(equip(X)),asserta(equip(laptop)), write('senjata yang dipakai : Laptop (Damage attack : 100 !!! Ngeri bosque)'),nl,!. */
 
 /* Take armor */
 takes(X):-
@@ -216,6 +234,14 @@ takes(X):-
 	asserta(inventory(X)),
 	retract(objLoc(X,Y,Z)),
 	write('item '), write(X),write(' diambil'), nl, write('kamu siap untuk bertempur!'),nl, !.
+/* Take Ammo */
+/* takes(X):-
+	obj(weapammo,X),
+	objLoc(X,Y,Z),
+	currLoc(Y,Z),!,
+	asserta(inventory(X)),
+	retract(objLoc(X,Y,Z)),
+	write('item '), write(X),write(' diambil'), nl, !. */
 
 /* Take ammo & medicine */
 takes(X):-
@@ -238,9 +264,9 @@ uses(X) :-
 	retract(inventory(X)),!.
 /* Use Ammo */
 uses(X) :-
-	obj(weapon_ammo,X),
+	obj(weapammo,X),
 	inventory(X),
-	equip_ammo(X),
+	add_ammo(X),
 	retract(inventory(X)),!.
 /* Use weapon*/
 uses(X) :-
@@ -282,12 +308,10 @@ drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 /*END CONDITION*/
 end(quit) :- halt, !.
 
-end_condition :-
-  health(0), !,
-  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl, end(quit), !.
-/*
-end_condition :-
-  totalenemy(0), !,
-  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl, end(quit), !.
-*/
- end_condition.
+end_condition(_) :-
+  hp(0),
+  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl,!.
+
+end_condition(_) :-
+  totalenemy(0),
+  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl,!.
