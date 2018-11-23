@@ -17,22 +17,21 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 /*Static Variable*/
 
 health(50).
-armor(none,0).
+armor(jamal,50).
 currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
 inventory(nasjep).
 inventory(kunciC).
-inventory(ammoC).
-equip(none).
-ammo(0).
+inventory(ammo).
+inventory(jahim).
+
+equip(batuRuby).
+ammo(5).
 
 /*default object*/
 obj(armor, jahim).
 obj(armor, jamal).
 obj(armor, sweater).
-newarmor(jahim, 100).
-newarmor(jamal, 50).
-newarmor(sweater, 25).
 obj(medicine,ekado).
 obj(medicine,nasjep).
 obj(medicine,crisbar).
@@ -40,14 +39,20 @@ obj(weapon,kunciC).
 obj(weapon,batuRuby).
 obj(weapon,ularPython).
 obj(weapon_ammo,ammo).
+
+newarmor(jahim, 100).
+newarmor(jamal, 50).
+newarmor(sweater, 25).
+
 newammo(ammo, 5).
+
 damage(kunciC,20).
 damage(batuRuby,30).
 damage(ularPython,40).
 
 /*default lokasi object*/
-objLoc(laptop, 3, 4).
-objLoc(ammoLaptop, 8, 9).
+objLoc(kunciC, 3, 4).
+objLoc(ammo, 8, 9).
 objLoc(ekado, 1, 4).
 objLoc(jahim, 6, 8).
 

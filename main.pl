@@ -110,7 +110,7 @@ printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
 printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 printmap(X,0) :- write('X '), printmap(X,1), !.
 printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
+printmap(X,Y) :- objLoc(A,X,Y), obj(weapon_ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon, A), !,  write('W '), Y1 is Y+1, printmap(X,Y1), !.
@@ -239,21 +239,28 @@ uses(X) :-
 	asserta(inventory(Y)),
 	equip_weapon(X),
 	retract(inventory(X)),!.
+uses(X) :- write(X), write(' tidak bisa digunakan\n'), !.
 
 /* Drop */
 
 /* Drop dari inventory*/
-drop(X) :- inventory(X),!, retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), write(X), write('berhasil di drop'), nl,!.
+drop(X) :- inventory(X),!, retract(inventory(X)), currLoc(A,B), asserta(objLoc(X, A, B)), write(X), write(' berhasil di drop'), nl,!.
 
 
 /* Drop armor*/
 drop(X) :- armor(X,N), newarmor(X,N), !, retract(armor(X,N)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(armor(none,0)), write(X), write('berhasil di drop'), nl, !.
-drop(X) :- armor(X,N),!, write('armor yang sudah berkurang tidak dapat didrop').
+drop(X) :- armor(X,N),!, retract(armor(X,N)), asserta(armor(none,0)), write('armor yang sudah berkurang sehingga hilang dari peta'), nl, !.
 
 /* Drop weapon*/
-drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)),  write(X), write('berhasil di drop'), nl,!.
+drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)),  write(X), write(' berhasil di drop'), nl,!.
+
+/* Drop ammo*/
+drop(ammo) :- ammo(X), newammo(ammo, X), !, retract(ammo(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(ammmo(0)),  write(X), write('berhasil di drop'), nl,!.
+drop(X) :- ammo(X),!, retract(ammo(X)), asserta(ammmo(0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
 
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
+
+
 
 /* Use magazine */
 /* use1(X) :-
@@ -262,7 +269,7 @@ drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 	equip(Y),
 	asserta(inventory(Y)),
 	equip_weapon(X),
-	retract(inventory(X)),move_all_enemies,!. */
+	retract(inventory(X)),!. */
 
 
 /*END CONDITION*/
