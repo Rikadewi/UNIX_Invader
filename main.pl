@@ -69,7 +69,7 @@ notmaxinv :-
 	N<X.
 
 count([],0).
-count([H|T],N) :- 
+count([H|T],N) :-
 	count(T, N1),
 	N is N1+1, !.
 
@@ -97,6 +97,8 @@ savegame:-
 	write(Save,disDeadzone(Dead)),write(Save,'.'),nl(Save),
 	langkah(L),
 	write(Save,langkah(L)),write(Save,'.'),nl(Save),
+	maxinventory(I),
+	write(Save,maxinventory(I)),write(Save,'.'),nl(Save),
 	close(Save),
 	findall(I,inventory(I),ListInvent),
 	write_list_oneparam('savefile.txt',ListInvent,inventory),
@@ -178,8 +180,12 @@ loadgame:-
 	totalenemy(E),
 	difficulty(L),
 	disDeadzone(D),
+	langkah(L),
+	maxinventory(I),
+	retractall(langkah(L)),
+	retractall(maxinventory(I)),
 	retractall(difficulty(L)),
-	retractall(disDeadzone(L)),
+	retractall(disDeadzone(D)),
 	retractall(health(H)),
 	retractall(armor(A)),
 	retractall(currLoc(Px,Py)),
@@ -341,7 +347,8 @@ statuss :-
 	weapon_ammo(W, B), ammo(B, A),
 
 	write('Ammo : '), write(A),nl,
-	write('List Inventory : '),
+	write('List Inventory '),
+	maxinventory(In), write('('),write(In),write(') :'),
 	findall(I,inventory(I),Listinvent), nl,
 	printlist(Listinvent),nl,!.
 
@@ -446,7 +453,7 @@ takes(X):-
 	currLoc(Y,Z),!,
 	plusinv(X),
 	retract(objLoc(X,Y,Z)),
-	write('item '), write(X), write(' diambil'), nl, 
+	write('item '), write(X), write(' diambil'), nl,
 	maxinventory(N),
 	write('Maximum inventory berubah menjadi '), write(N), nl, !.
 
@@ -547,7 +554,7 @@ drop(X) :- equip(X), weapon_ammo(X, A),  ammo(A, N), N == 0, !,
 drop(X) :- equip(X), weapon_ammo(X, A),  ammo(A, N), !,
 	retract(equip(X)),
 	retract(ammo(A, N)),
-	currLoc(C,B), 
+	currLoc(C,B),
 	asserta(objLoc(X, C, B)),
 	asserta(equip(none)),
 	asserta(ammo(A, 0)),
