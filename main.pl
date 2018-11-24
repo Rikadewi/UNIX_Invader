@@ -223,7 +223,7 @@ printLegend :-
 /*Random spawn player*/
 spawn_player:-
 	currLoc(X,Y),
-	set_seed(1), randomize,
+	set_seed(1),randomize,
 	random(1,11,Xnew),
 	random(1,11,Ynew),
 	retract(currLoc(X,Y)),
@@ -291,24 +291,24 @@ printlist([H|T]) :- write(H), nl, printlist(T),!.
 /* equip_armor(jahim) :- newarmor(jahim,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
 equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
 equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X<50, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jahim) :- newarmor(jahim,N), armor(sweater,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jahim) :- newarmor(jahim,N), armor(sweater,X), X<25, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), armor(slayerSparta,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
+equip_armor(jahim) :- newarmor(jahim,N), armor(slayerSparta,X), X<25, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
 equip_armor(jamal) :- newarmor(jamal,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
 equip_armor(jamal) :- newarmor(jamal,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
 equip_armor(jamal) :- newarmor(jamal,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(sweater,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(sweater,X), X<25, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(jamal,X), X<25, retract(armor(A,X)),asserta(armor(sweater,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!. */
+equip_armor(jamal) :- newarmor(jamal,N), armor(slayerSparta,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(jamal) :- newarmor(jamal,N), armor(slayerSparta,X), X<25, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jamal,X), X<25, retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!. */
 
 equip_armor(jahim) :- newarmor(jahim,N), armor(X), retract(armor(X)), asserta(armor(N)), write('Armor : '),write(N),nl,!.
 equip_armor(jamal) :- newarmor(jamal,N), armor(X), X+N > 100,retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,!.
 equip_armor(jamal) :- newarmor(jamal,N), armor(X), W is X+N ,retract(armor(X)),asserta(armor(W)), write('Armor : '),write(W),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(X), X+N > 100,retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,!.
-equip_armor(sweater) :- newarmor(sweater,N), armor(X), W is X+N ,retract(armor(X)),asserta(armor(W)), write('Armor : '),write(W),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(X), X+N > 100,retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,!.
+equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(X), W is X+N ,retract(armor(X)),asserta(armor(W)), write('Armor : '),write(W),nl,!.
 
 pakai_obat(crisbar) :- health(X), retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
@@ -320,6 +320,7 @@ pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)),
 add_ammo(ammoC) :- newammo(ammoC, N), ammo(ammoC, X), W is X + N, retract(ammo(ammoC, X)), asserta(ammo(ammoC, W)), write('Total ammoC adalah : '), write(W),nl,!.
 add_ammo(ammoRuby) :- newammo(ammoRuby, N), ammo(ammoRuby, X), W is X + N, retract(ammo(ammoRuby, X)), asserta(ammo(ammoRuby, W)), write('Total ammoRuby adalah : '), write(W),nl,!.
 add_ammo(ammoPython) :- newammo(ammoPython, N), ammo(ammoPython, X), W is X + N, retract(ammo(ammoPython, X)), asserta(ammo(ammoPython, W)), write('Total ammoPython adalah : '), write(W),nl,!.
+add_ammo(ammoJava) :- newammo(ammoJava, N), ammo(ammoJava, X), W is X + N, retract(ammo(ammoJava, X)), asserta(ammo(ammoJava, W)), write('Total ammoJava adalah : '), write(W),nl,!.
 
 equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),
 						weapon_ammo(kunciC, B), ammo(B, J), asserta(equip(kunciC)),
@@ -493,10 +494,10 @@ end(quit) :- halt, !.
 
 end_condition :-
   health(0), !,
-  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl, end(quit), !.
+  write('Nyawa Anda hilang. Permainan Selesai, Anda kalah.'),nl, end(quit), !.
 
 end_condition :-
   totalenemy(0), !,
-  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl, end(quit), !.
+  write('Anda telah memusnahkan seluruh anggota UNIX, selamaaatt !!!.'),nl, end(quit), !.
 
  end_condition.

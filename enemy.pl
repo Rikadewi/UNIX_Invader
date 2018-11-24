@@ -1,22 +1,22 @@
 /*Deklarasi enemy */
-/*enemy(ID,nama,health,damage) */
-enemy(1,joshua,100,100).
-enemy(2,badur,20,20).
-enemy(3,lukas,20,20).
-enemy(4,rika,20,20).
-enemy(5,alam,20,20).
-enemy(6,johanes,20,20).
-enemy(7,tude,20,20).
-enemy(9,asyraf,20,20).
-enemy(10,asif,20,20).
-enemy(8,bari,20,20).
-enemy(11,jofi,20,20).
-enemy(12,kintan,20,20).
-enemy(13,vania,20,20).
-enemy(14,asistenlogif,20,100).
-enemy(15,winston,20,20).
-enemy(16,steve,20,20).
-enemy(17,dika,20,20).
+/*enemy(ID,nama,weapon,damage) */
+enemy(1,joshua,kepintaranya,100).
+enemy(2,badur,kunciC,20).
+enemy(3,lukas,kunciC,20).
+enemy(4,rika,kunciC,20).
+enemy(5,alam,kunciC,20).
+enemy(6,johanes,ularPython,20).
+enemy(7,tude,ularPython,20).
+enemy(9,asyraf,ularPython,20).
+enemy(10,asif,ularPython,20).
+enemy(8,bari,ularPython,20).
+enemy(11,jofi,ularPython,20).
+enemy(12,kintan,ularPython,20).
+enemy(13,danlap,agitashit,50).
+enemy(14,asistenlogif,nilaiE,100).
+enemy(15,winston,batuRuby,20).
+enemy(16,steve,batuRuby,20).
+enemy(17,pakRila,nilaiE,100).
 
 
 spawn_enemy(N):-
@@ -168,7 +168,7 @@ move_ene(List) :-
 	move_ene(Tail).
 
 move_all_enemies :-
-  write('semua enemy bergerak!'),nl,
+  write('semua enemy bergerak, FOKUS MAS/MBA!'),nl,
 	findall(N,enemyLoc(N,_,_),Listene),
 	move_ene(Listene), !.
 
@@ -176,13 +176,14 @@ move_all_enemies :-
 attack_enemy :-
   currLoc(X,Y),
   enemyLoc(V,X,Y),
-  equip(W), !,
+  equip(W),
   weapon_ammo(W, AmmoW),
   ammo(AmmoW, WA),
+  WA>0,!,
   totalenemy(N),
-  write('A wild '),write(V),write(' appears!'),nl,
-  write('Anda menggunakan '), write(W),nl,
-  write(V), write(' telah berhasil dinetralisir'),nl,
+  write('Anda menggunakan '), write(W), write(' untuk memusnahkan '), write(V), write(', luar biasa!'),nl,!,
+  enemy(_,V,D,_),
+  dropWeapon(D,X,Y),
   retract(enemyLoc(V,X,Y)),
   retract(totalenemy(N)),
   retract(ammo(AmmoW, WA)),
@@ -194,40 +195,64 @@ attack_enemy :-
 attack_enemy :-
   currLoc(X,Y),
   enemyLoc(V,X,Y),
-  write('Anda mencoba melawannya dengn tangan kosong, namun apa daya seorang mahasiswa IF yang jarang olahraga'),nl,
-  write('Seranganmu akhirnya Gagal!'),!.
+  equip(W),
+  weapon_ammo(W, AmmoW),
+  ammo(AmmoW, WA),
+  WA=0,!,
+  write('Anda Mencoba menggunakan '), write(W), write(' namun Ammo Kosong, makanya spek diperhatikan!').
+
+attack_enemy :-
+  currLoc(X,Y),
+  enemyLoc(V,X,Y),
+  write('Anda mencoba melawannya dengn tangan kosong, namun apa daya seorang mahasiswa IF yang terlalu banyak nubes, jarang olahraga'),nl,
+  write('Seranganmu Gagal!'),!.
 
 attack_enemy :-
   write('tidak ada musuh di sekitar, ferguso'),nl,!.
+
+dropWeapon(D,X,Y):-
+  obj(weapon,D),
+  write('Musuh telah drop '), write(D),nl,
+  asserta(objLoc(D,X,Y)),!.
+
+dropWeapon(D,_,_):-
+  write(D), write(' tidak memiliki senjata untuk di drop'),nl,!.
+
 
 
 enemyaction(V,X,Y) :-
   currLoc(X,Y),
   random(0,2,C), %klo 1 kena, kalo 0 nggak
-  write('si '), write(V), write(' berusaha menyerang dan mendapat '), hitmiss(C), nl,
+  hitmiss(V,C), nl,
   hitplayer(V,C), !.
 
 enemyaction(V,X,Y):-
-  write('si '), write(V), write(' tidak ngapa-ngapain'),nl.
+  !.
 
-hitmiss(C) :-
-  C == 1, !, write('hit'), !.
+hitmiss(V,C) :-
+  C == 1, !, write('A wild '), write(V), write(' appears!'), write(' dia berhasil menyerangmu!'),nl, !.
 
-hitmiss(C) :- write('miss'), !.
+hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu!'),nl, !.
 
 hitplayer(V,1) :-
-  enemy(_,V,_,D),
+  enemy(_,V,W,_),
   health(X),
-  X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),nl,!.
+  obj(weapon,W),
+  damage(W,D),
+  X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),write(' menggunakan '), write(W),nl,!.
 
 hitplayer(V,1) :-
-  enemy(_,V,_,D),
+  enemy(_,V,W,D),
+  health(X),
+  X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+
+hitplayer(V,1) :-
+  enemy(_,V,W,D),
   health(X),
   X>D, Xnew is X-D,
   retract(health(X)), asserta(health(Xnew)),
-  write('Anda telah disakiti oleh '), write(V),nl,
+  write('Anda telah disakiti oleh '), write(V),write(' menggunakan '),write(W),nl,
   write('Nyawa berkurang sebesar '), write(D),nl,!.
 
 hitplayer(V,0) :-
   write('Anda berhasil menghindarnya!'),nl.
-

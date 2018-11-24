@@ -33,7 +33,7 @@ equip(batuRuby).
 /*default object*/
 obj(armor, jahim).
 obj(armor, jamal).
-obj(armor, sweater).
+obj(armor, slayerSparta).
 obj(medicine,ekado).
 obj(medicine,nasjep).
 obj(medicine,crisbar).
@@ -49,20 +49,23 @@ obj(weaponammo,ammonone).
 weapon_ammo(kunciC, ammoC).
 weapon_ammo(batuRuby, ammoRuby).
 weapon_ammo(ularPython, ammoPyhton).
+weapon_ammo(kopiJava, ammoJava).
 weapon_ammo(none, ammonone).
 
 ammo(ammoRuby, 4).
 ammo(ammoC, 0).
 ammo(ammoPython, 0).
 ammo(ammonone, 0).
+ammo(ammoJava,0).
 
 newarmor(jahim, 100).
 newarmor(jamal, 50).
-newarmor(sweater, 25).
+newarmor(slayerSparta, 25).
 
 newammo(ammoruby, 5).
 newammo(ammoC, 5).
 newammo(ammoPython, 5).
+newammo(ammoJava,5).
 
 damage(kunciC,20).
 damage(batuRuby,30).
@@ -72,7 +75,7 @@ damage(ularPython,40).
 objLoc(kunciC, 3, 4).
 objLoc(ammoC, 8, 9).
 objLoc(ekado, 1, 4).
-objLoc(sweater, 6, 8).
+objLoc(slayerSparta, 6, 8).
 
 /*default peta*/
 loc(1,1,'hutan').
