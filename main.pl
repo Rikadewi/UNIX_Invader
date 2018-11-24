@@ -247,7 +247,7 @@ printLegend :-
 /*Random spawn player*/
 spawn_player:-
 	currLoc(X,Y),
-	set_seed(1),randomize,
+	set_seed(2),randomize,
 	random(1,11,Xnew),
 	random(1,11,Ynew),
 	retract(currLoc(X,Y)),
@@ -279,15 +279,24 @@ plusDeadzone:-
 	upzone(D1,D2),
 	downzone(D1,D2),
 	leftzone(D1,D2),
-	rightzone(D1,D2).
+	rightzone(D1,D2),
+	supply.
 
+upzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retract(objLoc(_,X,Y)), asserta(deadzone(D1,D1)),!.
 upzone(D1,D1):- asserta(deadzone(D1,D1)),!.
+upzone(D1,D2):- objLoc(_,X,Y), X==D1,Y==D2,!, retract(objLoc(_,X,Y)), asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
 upzone(D1,D2):- asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
+downzone(D2,D2):-objLoc(_,X,Y), X==D2,Y==D2,!, retract(objLoc(_,X,Y)), asserta(deadzone(D2,D2)),!.
 downzone(D2,D2):-asserta(deadzone(D2,D2)),!.
+downzone(D1,D2):- objLoc(_,X,Y), X==D2,Y==D1,!, retract(objLoc(_,X,Y)),asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
 downzone(D1,D2):- asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
+leftzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retract(objLoc(_,X,Y)), retract(deadzone(D1,D1)),!.
 leftzone(D1,D1):-retract(deadzone(D1,D1)),!.
+leftzone(D1,D2):- Dnew is D2-1, objLoc(_,X,Y), X==Dnew,Y==D1,!, retract(objLoc(_,X,Y)),asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
 leftzone(D1,D2):- Dnew is D2-1, asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
+rightzone(D2,D2):- objLoc(_,X,Y), X==D2,Y==D2,!, retract(objLoc(_,X,Y)),retract(deadzone(D2,D2)),!.
 rightzone(D2,D2):-retract(deadzone(D2,D2)),!.
+rightzone(D1,D2):- Dnew is D1+1, objLoc(_,X,Y), X==Dnew,Y==D2,!, retract(objLoc(_,X,Y)),asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
 rightzone(D1,D2):- Dnew is D1+1, asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
 
 
@@ -560,15 +569,15 @@ supply :-
 	random(A,A1,X),
 	random(A,A1,Y),
 	asserta(objLoc(ekado,X,Y)),
-	random(A,A1,X),
-	random(A,A1,Y),
-	asserta(objLoc(jahim,X,Y)),
-	random(A,A1,X),
-	random(A,A1,Y),
-	asserta(objLoc(kunciC,X,Y)),
-	random(A,A1,X),
-	random(A,A1,Y),
-	asserta(objLoc(ammoC,X,Y)), !.
+	random(A,A1,X2),
+	random(A,A1,Y2),
+	asserta(objLoc(jahim,X2,Y2)),
+	random(A,A1,X3),
+	random(A,A1,Y3),
+	asserta(objLoc(kunciC,X3,Y3)),
+	random(A,A1,X4),
+	random(A,A1,Y4),
+	asserta(objLoc(ammoC,X4,Y4)), !.
 
 
 /*END CONDITION*/
