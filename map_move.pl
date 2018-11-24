@@ -1,11 +1,13 @@
 /*PRINT MAP*/
 
+printmap(11,11) :- currLoc(11,11), !,  write('P '), nl, !.
+printmap(X,11) :- currLoc(X,11), !,  write('P '), X1 is X+1, nl, printmap(X1,0), !.
 printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(11,11) :- write('X '), nl, !.
 printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
-printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
-printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
-printmap(X,0) :- write('X '), printmap(X,1), !.
+% printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
+% printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
+% printmap(X,0) :- write('X '), printmap(X,1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weaponammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
@@ -50,22 +52,22 @@ plusdisDeadzone(Count):- Count==26, disDeadzone(D) , D2 is D+1,retract(disDeadzo
 plusdisDeadzone(Count):- Count==21,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
 plusdisDeadzone(Count):- Count==15,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
 plusdisDeadzone(Count):- Count==8,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
-plusdisDeadzone(Count):-!.
+plusdisDeadzone(_):-!.
 /*MOVEMENT*/
 
-north :- currLoc(X,Y), X == 0, !, write('Tidak bisa ke atas'), nl, minushp, !.
+north :- currLoc(X,_), X == 0, !, write('Tidak bisa ke atas'), nl, minushp, !.
 north :- currLoc(X,Y), X1 is X-1, deadzone(X1,Y), !,retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 north :- currLoc(X,Y), X1 is X-1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-south :- currLoc(X,Y), X == 11, !, write('Tidak bisa ke bawah'), nl, minushp, !.
+south :- currLoc(X,_), X == 11, !, write('Tidak bisa ke bawah'), nl, minushp, !.
 south :- currLoc(X,Y), X1 is X+1, deadzone(X1,Y), !, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 south :- currLoc(X,Y), X1 is X+1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-west :- currLoc(X,Y), Y == 0, !, write('Tidak bisa ke kiri'), nl, minushp, !.
+west :- currLoc(_,Y), Y == 0, !, write('Tidak bisa ke kiri'), nl, minushp, !.
 west :- currLoc(X,Y), Y1 is Y-1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
-east :- currLoc(X,Y), Y == 11, !, write('Tidak bisa ke kanan'), nl, minushp, !.
+east :- currLoc(_,Y), Y == 11, !, write('Tidak bisa ke kanan'), nl, minushp, !.
 east :- currLoc(X,Y), Y1 is Y+1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
@@ -100,7 +102,7 @@ printinfoW :-
 	write('Sebelah baratmu adalah Deadzone hati-hati!'), nl, !.
 
 printinfoW :-
-	currLoc(X,Y),
+	currLoc(_,Y),
 	Y1 is Y-1,
 	Y1 =:= -1, !,
 	write('Sebelah baratmu adalah tembok, Ferguso'), nl, !.
@@ -119,8 +121,8 @@ printinfoE :-
 	write('Sebelah timurmu adalah Deadzone hati-hati!'), nl, !.
 
 printinfoE :-
-	currLoc(X,Y),
-	Y1 is X+1,
+	currLoc(_,Y),
+	Y1 is Y+1,
 	Y1 =:= 12,!,
 	write('Sebelah timurmu adalah tembok, Ferguso'), nl, !.
 
@@ -138,7 +140,7 @@ printinfoS :-
 	write('Sebelah selatanmu adalah Deadzone hati-hati!'), nl, !.
 
 printinfoS :-
-	currLoc(X,Y),
+	currLoc(X,_),
 	X1 is X+1,
 	X1 =:= 12,!,
 	write('Sebelah selatanmu adalah tembok, Ferguso'), nl, !.
@@ -157,7 +159,7 @@ printinfoN :-
 	write('Sebelah utaramu adalah Deadzone hati-hati!'), nl, !.
 
 printinfoN :-
-	currLoc(X,Y),
+	currLoc(X,_),
 	X1 is X-1,
 	X1 =:= 0,!,
 	write('Sebelah utaramu adalah tembok, Ferguso'), nl, !.

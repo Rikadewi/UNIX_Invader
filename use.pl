@@ -33,18 +33,18 @@ add_ammo(ammoRuby) :- newammo(ammoRuby, N), ammo(ammoRuby, X), W is X + N, retra
 add_ammo(ammoPython) :- newammo(ammoPython, N), ammo(ammoPython, X), W is X + N, retract(ammo(ammoPython, X)), asserta(ammo(ammoPython, W)), write('Total ammoPython adalah : '), write(W),nl,!.
 add_ammo(ammoJava) :- newammo(ammoJava, N), ammo(ammoJava, X), W is X + N, retract(ammo(ammoJava, X)), asserta(ammo(ammoJava, W)), write('Total ammoJava adalah : '), write(W),nl,!.
 
-equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),
+equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), ammo(Z, _), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),
 						weapon_ammo(kunciC, B), ammo(B, J), asserta(equip(kunciC)),
 						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,
 						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.
 
-/*equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, N), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)),
+/*equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, _), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)),
 						weapon_ammo(kunciC, B), total_ammo(B, J), asserta(equip(kunciC)), asserta(ammo(J)),
 						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,
 						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
 
 
-equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),
+equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), ammo(Z, _), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),
 						weapon_ammo(batuRuby, B), ammo(B, J), asserta(equip(batuRuby)),
 						write('senjata yang dipakai : batuRuby (Damage attack: 30)'),nl,
 						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.

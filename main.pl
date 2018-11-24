@@ -54,7 +54,7 @@ do(e) :- east, printinfo, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is 
 do(drop(X)) :- drop(X), move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(look) :-	look_around, nl, !.
 do(take(X)):- notmaxinv, !, takes(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
-do(take(X)):- write('Inventory full, ferguso'), nl, !.
+do(take(_)):- write('Inventory full, ferguso'), nl, !.
 do(use(X)):- uses(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(attack) :-	attack_enemy, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(status) :- statuss,!.
@@ -70,7 +70,7 @@ notmaxinv :-
 	N<X.
 
 count([],0).
-count([H|T],N) :-
+count([_|T],N) :-
 	count(T, N1),
 	N is N1+1, !.
 
@@ -122,7 +122,7 @@ savegame:-
 	*/
 
 /*Bagian rekursif untuk save game*/
-writeData_One(_,[],Name) :- !.
+writeData_One(_,[],_) :- !.
 writeData_One(S,[X1|Tail],Name) :-
 	write(S,Name),
 	write(S,'('),
@@ -138,7 +138,7 @@ write_list_oneparam(NamaFile,L,Name) :-
 	writeData_One(S,L,Name),
 	close(S).
 
-writeData_three(_,[],[],[],Name) :- !.
+writeData_three(_,[],[],[],_) :- !.
 writeData_three(S,[X1|Tail1],[X2|Tail2],[X3|Tail3],Name) :-
 	write(S,Name),
 	write(S,'('),
@@ -154,7 +154,7 @@ write_list_threeparam(NamaFile,L1,L2,L3,Name) :-
 	writeData_three(S,L1,L2,L3,Name),
 	close(S).
 
-writeData_two(_,[],[],Name) :- !.
+writeData_two(_,[],[],_) :- !.
 writeData_two(S,[X1|Tail1],[X2|Tail2],Name) :-
 	write(S,Name),
 	write(S,'('),
@@ -344,7 +344,7 @@ takes(X):-
 
 /* Take ammo & medicine */
 takes(X):-
-	obj(Jenis,X),
+	obj(_,X),
 	objLoc(X,Y,Z),
 	currLoc(Y,Z),!,
 	asserta(inventory(X)),
@@ -389,7 +389,7 @@ drop(X) :- equip(X), weapon_ammo(X, A),  ammo(A, N), !,
 /* Drop ammo*/
 
 drop(X) :- obj(weaponammo, X), ammo(X, N), newammo(X, N), !, retract(ammo(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(ammo(X, 0)),  write(X), write('berhasil di drop'), nl,!.
-drop(X) :- obj(weaponammo, X),!, retract(ammo(X, N)), asserta(ammo(X, 0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
+drop(X) :- obj(weaponammo, X),!, retract(ammo(X, _)), asserta(ammo(X, 0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
 
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 
@@ -404,8 +404,8 @@ supply :-
 	asserta(objLoc(M_name,X,Y)),
 	random(A,A1,X2),
 	random(A,A1,Y2),
-	random(1,4,A),
-	armor_name(A, A_name),
+	random(1,4,Ar),
+	armor_name(Ar, A_name),
 	asserta(objLoc(A_name,X2,Y2)),
 	random(A,A1,X3),
 	random(A,A1,Y3),
@@ -414,7 +414,7 @@ supply :-
 	asserta(objLoc(W_name,X3,Y3)),
 	random(A,A1,X4),
 	random(A,A1,Y4),
-	random(1,4,A),
+	random(1,4,O),
 	ammo_name(O, O_name),
 	asserta(objLoc(O_name,X4,Y4)), !.
 

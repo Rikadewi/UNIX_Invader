@@ -193,7 +193,7 @@ attack_enemy :-
 
 attack_enemy :-
   currLoc(X,Y),
-  enemyLoc(V,X,Y),
+  enemyLoc(_S,X,Y),
   equip(W),
   weapon_ammo(W, AmmoW),
   ammo(AmmoW, WA),
@@ -202,7 +202,7 @@ attack_enemy :-
 
 attack_enemy :-
   currLoc(X,Y),
-  enemyLoc(V,X,Y),
+  enemyLoc(_,X,Y),
   write('Anda mencoba melawannya dengn tangan kosong, namun apa daya seorang mahasiswa IF yang terlalu banyak nubes, jarang olahraga'),nl,
   write('Seranganmu Gagal!'),!.
 
@@ -225,13 +225,13 @@ enemyaction(V,X,Y) :-
   hitmiss(V,C), nl,
   hitplayer(V,C), !.
 
-enemyaction(V,X,Y):-
+enemyaction(_,_,_):-
   !.
 
 hitmiss(V,C) :-
   C == 1, !, write('A wild '), write(V), write(' appears!'), write(' dia berhasil menyerangmu!'),nl, !.
 
-hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu!'),nl, !.
+hitmiss(V,_) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu!'),nl, !.
 
 hitplayer(V,1) :-
   enemy(_,V,W,_),
@@ -253,5 +253,5 @@ hitplayer(V,1) :-
   write('Anda telah disakiti oleh '), write(V),write(' menggunakan '),write(W),nl,
   write('Nyawa berkurang sebesar '), write(D),nl,!.
 
-hitplayer(V,0) :-
+hitplayer(_,0) :-
   write('Anda berhasil menghindarnya!'),nl.
