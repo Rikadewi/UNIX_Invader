@@ -2,22 +2,20 @@
 :-include('variables.pl').
 :-include('enemy.pl').
 :-include('look.pl').
-/*badur was here*/
+:-include('use.pl').
+:-include('map_move.pl').
 
 /*Rules*/
 start :-
-
-
-	write('███    █▄  ███▄▄▄▄    ▄█  ▀████    ▐████▀       ▄█  ███▄▄▄▄    ▄█    █▄     ▄████████ ████████▄     ▄████████    ▄████████    ▄████████ '), nl,
-	write('███    ███ ███▀▀▀██▄ ███    ███▌   ████▀       ███  ███▀▀▀██▄ ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███   ███    ███ '),nl,
-	write('███    ███ ███   ███ ███▌    ███  ▐███         ███▌ ███   ███ ███    ███   ███    ███ ███    ███   ███    █▀    ███    ███   ███    █▀  '),nl,
-	write('███    ███ ███   ███ ███▌    ▀███▄███▀         ███▌ ███   ███ ███    ███   ███    ███ ███    ███  ▄███▄▄▄      ▄███▄▄▄▄██▀   ███        '),nl,
-	write('███    ███ ███   ███ ███▌    ████▀██▄          ███▌ ███   ███ ███    ███ ▀███████████ ███    ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ▀███████████ '),nl,
-	write('███    ███ ███   ███ ███    ▐███  ▀███         ███  ███   ███ ███    ███   ███    ███ ███    ███   ███    █▄  ▀███████████          ███ '),nl,
-	write('███    ███ ███   ███ ███   ▄███     ███▄       ███  ███   ███ ███    ███   ███    ███ ███   ▄███   ███    ███   ███    ███    ▄█    ███ '),nl,
-	write('████████▀   ▀█   █▀  █▀   ████       ███▄      █▀    ▀█   █▀   ▀██████▀    ███    █▀  ████████▀    ██████████   ███    ███  ▄████████▀  '),nl
-	,nl,nl,
-
+	nl,
+	write('.##.....#.##....#.###.##.....#...###.##....#.##.....#....###...########.#######.########.'), nl,
+	write('.##.....#.###...#..##..##...##....##.###...#.##.....#...##.##..##.....#.##......##.....##'),nl,
+	write('.##.....#.####..#..##...##.##.....##.####..#.##.....#..##...##.##.....#.##......##.....##'),nl,
+	write('.##.....#.##.##.#..##....###......##.##.##.#.##.....#.##.....#.##.....#.######..########.'),nl,
+	write('.##.....#.##..###..##...##.##.....##.##..###..##...##.########.##.....#.##......##...##..'),nl,
+	write('.##.....#.##...##..##..##...##....##.##...##...##.##..##.....#.##.....#.##......##....##.'),nl,
+	write('..#######.##....#.###.##.....#...###.##....#....###...##.....#.########.#######.##.....##'),nl,
+	nl,nl,
 	write('Hai warrior! Siapa namamu? (dimulai huruf kecil)'), nl,
 	write('>> '),
 	read(X),
@@ -63,100 +61,6 @@ do(status) :- statuss,!.
 do(load) :-	loadgame, nl, !.
 do(_) :- write('Invalid Input'), nl, !.
 
-printinfo :-
-	currLoc(X,Y),
-	deadzone(X,Y),!,
-	write('Deadzone mengurangi health!'), nl,
-	printinfoW,
-	printinfoE,
-	printinfoN,
-	printinfoS, !.
-
-printinfo :-
-	currLoc(X,Y),
-	loc(X,Y,A),
-	write('Saat ini Anda sedang ada di '),
-	write(A), nl,
-	printinfoW,
-	printinfoE,
-	printinfoN,
-	printinfoS, !.
-
-printinfoW :-
-	currLoc(X,Y),
-	Y1 is Y-1,
-	deadzone(X,Y1),!,
-	write('Sebelah baratmu adalah Deadzone hati-hati!'), nl, !.
-
-printinfoW :-
-	currLoc(X,Y),
-	Y1 is Y-1,
-	Y1 =:= -1, !,
-	write('Sebelah baratmu adalah tembok, Ferguso'), nl, !.
-
-printinfoW :-
-	currLoc(X,Y),
-	Y1 is Y-1,
-	loc(X,Y1,A),
-	write('Sebelah barat Anda adalah '),
-	write(A), nl, !.
-
-printinfoE :-
-	currLoc(X,Y),
-	Y1 is Y+1,
-	deadzone(X,Y1),!,
-	write('Sebelah timurmu adalah Deadzone hati-hati!'), nl, !.
-
-printinfoE :-
-	currLoc(X,Y),
-	Y1 is X+1,
-	Y1 =:= 12,!,
-	write('Sebelah timurmu adalah tembok, Ferguso'), nl, !.
-
-printinfoE :-
-	currLoc(X,Y),
-	Y1 is Y+1,
-	loc(X,Y1,A),
-	write('Sebelah timur Anda adalah '),
-	write(A), nl, !.
-
-printinfoS :-
-	currLoc(X,Y),
-	X1 is X+1,
-	deadzone(X1,Y),!,
-	write('Sebelah selatanmu adalah Deadzone hati-hati!'), nl, !.
-
-printinfoS :-
-	currLoc(X,Y),
-	X1 is X+1,
-	X1 =:= 12,!,
-	write('Sebelah selatanmu adalah tembok, Ferguso'), nl, !.
-
-printinfoS :-
-	currLoc(X,Y),
-	X1 is X+1,
-	loc(X1,Y,A),
-	write('Sebelah selatan Anda adalah '),
-	write(A), nl, !.
-
-printinfoN :-
-	currLoc(X,Y),
-	X1 is X-1,
-	deadzone(X1,Y),!,
-	write('Sebelah utaramu adalah Deadzone hati-hati!'), nl, !.
-
-printinfoN :-
-	currLoc(X,Y),
-	X1 is X-1,
-	X1 =:= 0,!,
-	write('Sebelah utaramu adalah tembok, Ferguso'), nl, !.
-
-printinfoN :-
-	currLoc(X,Y),
-	X1 is X-1,
-	loc(X1,Y,A),
-	write('Sebelah utara Anda adalah '),
-	write(A), nl, !.
 
 /* inventory */
 notmaxinv :-
@@ -358,79 +262,7 @@ spawn_player:-
 	retract(currLoc(X,Y)),
 	asserta(currLoc(Xnew,Ynew)),!.
 
-/*PRINT MAP*/
 
-printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(11,11) :- write('X '), nl, !.
-printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
-printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
-printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
-printmap(X,0) :- write('X '), printmap(X,1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(weaponammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(weapon, A), !,  write('W '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(bag, A), !,  write('B '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- deadzone(X,Y), !,  write('X '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
-
-/*Smaller Map*/
-plusDeadzone:-
-	disDeadzone(D),
-	D1 is D-1,
-	D2 is 11-D1,
-	write('Peta Mengecil, Hati-hati dengan DEADZONE!!'),
-	upzone(D1,D2),
-	downzone(D1,D2),
-	leftzone(D1,D2),
-	rightzone(D1,D2),
-	supply.
-
-upzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retract(objLoc(_,X,Y)), asserta(deadzone(D1,D1)),!.
-upzone(D1,D1):- asserta(deadzone(D1,D1)),!.
-upzone(D1,D2):- objLoc(_,X,Y), X==D1,Y==D2,!, retract(objLoc(_,X,Y)), asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
-upzone(D1,D2):- asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
-downzone(D2,D2):-objLoc(_,X,Y), X==D2,Y==D2,!, retract(objLoc(_,X,Y)), asserta(deadzone(D2,D2)),!.
-downzone(D2,D2):-asserta(deadzone(D2,D2)),!.
-downzone(D1,D2):- objLoc(_,X,Y), X==D2,Y==D1,!, retract(objLoc(_,X,Y)),asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
-downzone(D1,D2):- asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
-leftzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retract(objLoc(_,X,Y)), retract(deadzone(D1,D1)),!.
-leftzone(D1,D1):-retract(deadzone(D1,D1)),!.
-leftzone(D1,D2):- Dnew is D2-1, objLoc(_,X,Y), X==Dnew,Y==D1,!, retract(objLoc(_,X,Y)),asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
-leftzone(D1,D2):- Dnew is D2-1, asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
-rightzone(D2,D2):- objLoc(_,X,Y), X==D2,Y==D2,!, retract(objLoc(_,X,Y)),retract(deadzone(D2,D2)),!.
-rightzone(D2,D2):-retract(deadzone(D2,D2)),!.
-rightzone(D1,D2):- Dnew is D1+1, objLoc(_,X,Y), X==Dnew,Y==D2,!, retract(objLoc(_,X,Y)),asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
-rightzone(D1,D2):- Dnew is D1+1, asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
-
-
-
-plusdisDeadzone(Count):- Count==26, disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
-plusdisDeadzone(Count):- Count==21,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
-plusdisDeadzone(Count):- Count==15,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
-plusdisDeadzone(Count):- Count==8,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
-plusdisDeadzone(Count):-!.
-/*MOVEMENT*/
-
-north :- currLoc(X,Y), X == 0, !, write('Tidak bisa ke atas'), nl, minushp, !.
-north :- currLoc(X,Y), X1 is X-1, deadzone(X1,Y), !,retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
-north :- currLoc(X,Y), X1 is X-1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
-
-south :- currLoc(X,Y), X == 11, !, write('Tidak bisa ke bawah'), nl, minushp, !.
-south :- currLoc(X,Y), X1 is X+1, deadzone(X1,Y), !, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
-south :- currLoc(X,Y), X1 is X+1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
-
-west :- currLoc(X,Y), Y == 0, !, write('Tidak bisa ke kiri'), nl, minushp, !.
-west :- currLoc(X,Y), Y1 is Y-1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
-west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
-
-east :- currLoc(X,Y), Y == 11, !, write('Tidak bisa ke kanan'), nl, minushp, !.
-east :- currLoc(X,Y), Y1 is Y+1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
-east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
-
-minushp :- health(X),  X<10, !, retract(health(X)), asserta(health(0)), write('DANGER! DEADZONE!'), nl, !.
-minushp :- health(X), retract(health(X)), X1 is X-10, asserta(health(X1)), write('DANGER! DEADZONE!'), nl, !.
 
 /* Status*/
 statuss :-
@@ -454,78 +286,6 @@ statuss :-
 printlist([]).
 printlist([H|T]) :- write(H), nl, printlist(T),!.
 
-
-/* equip_armor(jahim) :- newarmor(jahim,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jahim) :- newarmor(jahim,N), armor(jamal,X), X<50, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jahim) :- newarmor(jahim,N), armor(slayerSparta,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jahim) :- newarmor(jahim,N), armor(slayerSparta,X), X<25, retract(armor(A,X)),asserta(armor(jahim,N)), write('Armor : '),write(N),nl,write('Mantap bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(slayerSparta,X), X=25, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(slayerSparta,X), X<25, retract(armor(A,X)),asserta(armor(jamal,N)), write('Armor : '),write(N),nl,write('Not bad bosque'),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(A,X), X=0, retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jahim,X), X=100, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jahim,X), X<100, retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jamal,X), X=50, currLoc(P,Q), asserta(objLoc(A, P, Q)), retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(jamal,X), X<25, retract(armor(A,X)),asserta(armor(slayerSparta,N)), write('Armor : '),write(N),nl,write('Rapih bet bosque'),nl,!. */
-
-equip_armor(jahim) :- newarmor(jahim,N), armor(X), retract(armor(X)), asserta(armor(N)), write('Armor : '),write(N),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(X), X+N > 100,retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,!.
-equip_armor(jamal) :- newarmor(jamal,N), armor(X), W is X+N ,retract(armor(X)),asserta(armor(W)), write('Armor : '),write(W),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(X), X+N > 100,retract(armor(X)),asserta(armor(100)), write('Armor : '),write(100),nl,!.
-equip_armor(slayerSparta) :- newarmor(slayerSparta,N), armor(X), W is X+N ,retract(armor(X)),asserta(armor(W)), write('Armor : '),write(W),nl,!.
-
-pakai_obat(crisbar) :- health(X), retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
-pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
-pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
-pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
-pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
-
-
-add_ammo(ammoC) :- newammo(ammoC, N), ammo(ammoC, X), W is X + N, retract(ammo(ammoC, X)), asserta(ammo(ammoC, W)), write('Total ammoC adalah : '), write(W),nl,!.
-add_ammo(ammoRuby) :- newammo(ammoRuby, N), ammo(ammoRuby, X), W is X + N, retract(ammo(ammoRuby, X)), asserta(ammo(ammoRuby, W)), write('Total ammoRuby adalah : '), write(W),nl,!.
-add_ammo(ammoPython) :- newammo(ammoPython, N), ammo(ammoPython, X), W is X + N, retract(ammo(ammoPython, X)), asserta(ammo(ammoPython, W)), write('Total ammoPython adalah : '), write(W),nl,!.
-add_ammo(ammoJava) :- newammo(ammoJava, N), ammo(ammoJava, X), W is X + N, retract(ammo(ammoJava, X)), asserta(ammo(ammoJava, W)), write('Total ammoJava adalah : '), write(W),nl,!.
-
-equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),
-						weapon_ammo(kunciC, B), ammo(B, J), asserta(equip(kunciC)),
-						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.
-
-/*equip_weapon(kunciC) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, N), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)),
-						weapon_ammo(kunciC, B), total_ammo(B, J), asserta(equip(kunciC)), asserta(ammo(J)),
-						write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
-
-
-equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)),
-						weapon_ammo(batuRuby, B), ammo(B, J), asserta(equip(batuRuby)),
-						write('senjata yang dipakai : batuRuby (Damage attack: 30)'),nl,
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.
-
-/*equip_weapon(batuRuby) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, N), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)),
-						weapon_ammo(batuRuby, B), total_ammo(B, J), asserta(equip(batuRuby)), asserta(ammo(J)),
-						write('senjata yang dipakai : batuRuby (Damage attack: 30)'),nl,
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
-
-equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), N>0,asserta(inventory(Z)),*/ retract(equip(X)), retract(ammo(N)),
-						weapon_ammo(ularPython, B), ammo(B, J), asserta(equip(ularPython)),
-						write('senjata yang dipakai : ularPython (Damage attack: 40)'),nl,
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!.
-
-
-/*equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), total_ammo(Z, N), ammo(N), N == 0, retract(equip(X)), retract(ammo(N)),
-						weapon_ammo(ularPython, B), total_ammo(B, J), asserta(equip(ularPython)), asserta(ammo(J)),
-						write('senjata yang dipakai : ularPython (Damage attack: 40)'),nl,
-						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
-
-/*equip_weapon(kunciC) :- equip(X), weapon_ammo(kunciC, N), ammo(N), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
-
-equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
-equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!. */
-/* equip_weapon(laptop) :- equip(X), retract(equip(X)),asserta(equip(laptop)), write('senjata yang dipakai : Laptop (Damage attack : 100 !!! Ngeri bosque)'),nl,!. */
 
 plusinv(bagLv1) :-
 	maxinventory(N),
@@ -595,41 +355,6 @@ takes(X):-
 	write(X), write(' tidak ada di sini'), nl.
 
 
-/* Use medicine*/
-uses(X) :-
-	obj(medicine,X),
-	inventory(X),
-	pakai_obat(X),
-	retract(inventory(X)),!.
-/* Use Ammo */
-uses(X) :-
-	obj(weaponammo,X),
-	inventory(X),
-	add_ammo(X),
-	retract(inventory(X)),!.
-/* Use Armor */
-uses(X) :-
-	obj(armor,X),
-	inventory(X),
-	equip_armor(X),
-	retract(inventory(X)),!.
-/* Use weapon*/
-uses(X) :-
-	obj(weapon,X),
-	inventory(X),
-	equip(Y),
-	Y == 'none',
-	equip_weapon(X),
-	retract(inventory(X)),!.
-
-uses(X) :-
-	obj(weapon,X),
-	inventory(X),
-	equip(Y),
-	asserta(inventory(Y)),
-	equip_weapon(X),
-	retract(inventory(X)),!.
-uses(X) :- write(X), write(' tidak bisa digunakan\n'), !.
 
 /* Drop */
 
