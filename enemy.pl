@@ -176,7 +176,7 @@ move_all_enemies :-
 attack_enemy :-
   currLoc(X,Y),
   enemyLoc(V,X,Y),
-  equip(W),
+  equip(W), !,
   weapon_ammo(W, AmmoW),
   ammo(AmmoW, WA),
   totalenemy(N),
@@ -204,12 +204,16 @@ attack_enemy :-
 enemyaction(V,X,Y) :-
   currLoc(X,Y),
   random(0,2,C), %klo 1 kena, kalo 0 nggak
-  write('si '), write(V), write(' Berusaha menyerang dan mendapat '),write(C),nl,
-  hitplayer(V,C).
+  write('si '), write(V), write(' berusaha menyerang dan mendapat '), hitmiss(C), nl,
+  hitplayer(V,C), !.
 
 enemyaction(V,X,Y):-
-  write('si '), write(V), write(' Tidak ngpa2in'),nl.
+  write('si '), write(V), write(' tidak ngapa-ngapain'),nl.
 
+hitmiss(C) :-
+  C == 1, !, write('hit'), !.
+
+hitmiss(C) :- write('miss'), !.
 
 hitplayer(V,1) :-
   enemy(_,V,_,D),

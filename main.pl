@@ -441,17 +441,33 @@ drop(X) :- inventory(X),!, retract(inventory(X)), currLoc(A,B), asserta(objLoc(X
 
 
 /* Drop armor*/
-drop(X) :- armor(X,N), newarmor(X,N), !, retract(armor(X,N)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(armor(none,0)), write(X), write(' berhasil di drop'), nl, !.
-drop(X) :- armor(X,N),!, retract(armor(X,N)), asserta(armor(none,0)), write('armor sudah berkurang sehingga hilang dari peta'), nl, !.
+
+drop(armor) :- armor(X), X == 0, !, write('armor Anda 0'), nl, !.
+drop(armor) :- armor(X), retract(armor(X)), asserta(armor(0)), write('armor hilang dari peta'), nl, !.
+
 
 /* Drop weapon*/
-drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)),  write(X), write(' berhasil di drop'), nl,!.
+drop(X) :- equip(X), weapon_ammo(X, A),  ammo(A, N), N == 0, !, 
+	retract(equip(X)),  
+	currLoc(A,B), asserta(objLoc(X, A, B)), 
+	asserta(equip(none)),  
+	write(X), write(' berhasil di drop'), nl,!.
+
+drop(X) :- equip(X), weapon_ammo(X, A),  ammo(A, N), !, 
+	retract(equip(X)),  
+	retract(ammo(A, N)),  
+	currLoc(A,B), asserta(objLoc(X, A, B)), 
+	asserta(equip(none)),  
+	asserta(ammo(A, 0)), 
+	asserta(ammo(none, 0)), 
+	write(X), write(' berhasil di drop'), nl,
+	write('Amunisi hilang dari peta'), nl,!.
 
 /* Drop ammo*/
-/*
-drop(ammo) :- ammo(X), newammo(ammo, X), !, retract(ammo(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(ammo(0)),  write(X), write('berhasil di drop'), nl,!.
-drop(ammo) :- ammo(X),!, retract(ammo(X)), asserta(ammo(0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
-*/
+
+drop(X) :- obj(weaponammo, X), ammo(X, N), newammo(X, N), !, retract(ammo(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(ammo(X, 0)),  write(X), write('berhasil di drop'), nl,!.
+drop(X) :- obj(weaponammo, X),!, retract(ammo(X, N)), asserta(ammo(X, 0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
+
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 
 /* Supply Drop */

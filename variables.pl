@@ -13,7 +13,7 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(name/1).
 :- dynamic(disDeadzone/1). %tebal deadzone saat ini
 :- dynamic(deadzone/2). %(x, y)
-:- dynamic(ammo/2).
+:- dynamic(ammo/2). %nama ammo, jumlah
 :- dynamic(totalenemy/1).
 
 
