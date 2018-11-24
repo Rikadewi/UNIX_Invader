@@ -74,10 +74,11 @@ damage(batuRuby,30).
 damage(ularPython,40).
 
 /*default lokasi object*/
-objLoc(kunciC, 3, 4).
+objLoc(kunciC, 9, 10).
+objLoc(kunciC, 3, 10).
 objLoc(ammoC, 8, 9).
-objLoc(ekado, 1, 4).
-objLoc(slayerSparta, 6, 8).
+objLoc(ekado, 1, 1).
+objLoc(slayerSparta, 10, 10).
 
 /*default peta*/
 loc(1,1,'hutan').

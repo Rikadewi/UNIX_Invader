@@ -44,8 +44,7 @@ spawn_level(1) :-
   asserta(totalenemy(4)).
 
 spawn_level(2) :-
-  random(1,18,X),
-  spawn_enemy(X),
+  spawn_enemy(1),
   random(1,18,Y),
   spawn_enemy(Y),
   random(1,18,Z),
@@ -59,12 +58,9 @@ spawn_level(2) :-
   asserta(totalenemy(6)).
 
 spawn_level(3) :-
-  random(1,18,X),
-  spawn_enemy(X),
-  random(1,18,Y),
-  spawn_enemy(Y),
-  random(1,18,Z),
-  spawn_enemy(Z),
+  spawn_enemy(17),
+  spawn_enemy(14),
+  spawn_enemy(1),
   random(1,18,U),
   spawn_enemy(U),
   random(1,18,V),
