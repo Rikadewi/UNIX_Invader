@@ -1,5 +1,5 @@
 /*Included files */
-:-include('variablesedited.pl').
+:-include('variables.pl').
 :-include('enemy.pl').
 :-include('look.pl').
 /*badur was here*/
@@ -21,11 +21,6 @@ start :-
 	write('Masukkan Nama (dimulai huruf kecil): '),
 	read(X),
 	asserta(name(X)),
-
-	write('Instruksi permainan'), nl,
-	do(help),
-	spawn,
-
 	write('Pilih Tingkat stress yang anda inginkan : '),nl,
 	write('[1] Kentang'),nl,
 	write('[2] Sparta Day 4'),nl,
@@ -41,6 +36,7 @@ start :-
 		write('>> '), /* Menandakan input */
 		read(Input),nl, /*Meminta input dari usedr */
 		do(Input),nl, /*Menjadlankan do(Input) */
+		end_condition,
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
@@ -58,7 +54,7 @@ do(drop(X)) :- drop(X), move_all_enemies,!.
 do(look) :-	look_around, nl, !.
 do(take(X)):- takes(X),move_all_enemies,!.
 do(use(X)):- uses(X),move_all_enemies,!.
-do(attack) :-	write('attack'), nl, move_all_enemies,!.
+do(attack) :-	attack_enemy, move_all_enemies,!.
 do(status) :- statuss,!.
 do(load) :-	loadgame, nl, !.
 do(_) :- write('Invalid Input'), nl, !.
@@ -234,14 +230,13 @@ spawn_player:-
 	asserta(currLoc(Xnew,Ynew)),!.
 
 /*PRINT MAP*/
-is_loc_valid(X,Y) :- X<11, Y<11, X>0, Y>0, forall(deadzone(X1,Y1), X =:= X1), forall(deadzone(X2,Y2), Y2 =:= Y), !.
 
+printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(11,11) :- write('X '), nl, !.
 printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
 printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 printmap(X,0) :- write('X '), printmap(X,1), !.
-printmap(X,Y) :- currLoc(X,Y), !,  write('P '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon_ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
@@ -252,17 +247,24 @@ printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 
 /*MOVEMENT*/
 
-north :- currLoc(X,Y), X == 1, !, write('di paling atas'), nl, !.
+north :- currLoc(X,Y), X == 0, !, write('di paling atas'), nl, minushp, !.
+north :- currLoc(X,Y), X1 is X-1, deadzone(X1,Y), !,retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 north :- currLoc(X,Y), X1 is X-1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-south :- currLoc(X,Y), X == 10, !, write('di paling bawah'), nl, !.
+south :- currLoc(X,Y), X == 11, !, write('di paling bawah'), nl, minushp, !.
+south :- currLoc(X,Y), X1 is X+1, deadzone(X1,Y), !, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 south :- currLoc(X,Y), X1 is X+1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-west :- currLoc(X,Y), Y == 1, !, write('di paling kiri'), nl, !.
+west :- currLoc(X,Y), Y == 0, !, write('di paling kiri'), nl, minushp, !.
+west :- currLoc(X,Y), Y1 is Y-1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
-east :- currLoc(X,Y), Y == 10, !, write('di paling kanan'), nl, !.
+east :- currLoc(X,Y), Y == 11, !, write('di paling kanan'), nl, minushp, !.
+east :- currLoc(X,Y), Y1 is Y+1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
+
+minushp :- health(X),  X<10, !, retract(health(X)), asserta(health(0)), write('DANGER! DEADZONE!'), nl, !.
+minushp :- health(X), retract(health(X)), X1 is X-10, asserta(health(X1)), write('DANGER! DEADZONE!'), nl, !.
 
 /* Status*/
 statuss :-
@@ -275,7 +277,7 @@ statuss :-
 	equip(W),
 	write('Weapon : '), write(W),nl,
 
-	weapon_ammo(W, B), ammo(B, A)/*, ammo(A)*/,
+	weapon_ammo(W, B), ammo(B, A),
 
 	write('Ammo : '), write(A),nl,
 	write('List Inventory : '),
@@ -376,7 +378,7 @@ takes(X):-
 	write('item '), write(X),write(' diambil'), nl, write('kamu siap untuk bertempur!'),nl, !.
 /* Take Ammo */
 /* takes(X):-
-	obj(weapammo,X),
+	obj(weaponammo,X),
 	objLoc(X,Y,Z),
 	currLoc(Y,Z),!,
 	asserta(inventory(X)),
@@ -404,7 +406,7 @@ uses(X) :-
 	retract(inventory(X)),!.
 /* Use Ammo */
 uses(X) :-
-	obj(ammoSenjata,X),
+	obj(weaponammo,X),
 	inventory(X),
 	add_ammo(X),
 	retract(inventory(X)),!.
@@ -446,9 +448,10 @@ drop(X) :- armor(X,N),!, retract(armor(X,N)), asserta(armor(none,0)), write('arm
 drop(X) :- equip(X), !, retract(equip(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(equip(none)),  write(X), write(' berhasil di drop'), nl,!.
 
 /* Drop ammo*/
+/*
 drop(ammo) :- ammo(X), newammo(ammo, X), !, retract(ammo(X)), currLoc(A,B), asserta(objLoc(X, A, B)), asserta(ammo(0)),  write(X), write('berhasil di drop'), nl,!.
 drop(ammo) :- ammo(X),!, retract(ammo(X)), asserta(ammo(0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
-
+*/
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 
 /* Supply Drop */
@@ -466,16 +469,18 @@ supply :-
 	asserta(objLoc(kunciC,X,Y)),
 	random(A,A1,X),
 	random(A,A1,Y),
-	asserta(objLoc(ammoC,X,Y)), !,
+	asserta(objLoc(ammoC,X,Y)), !.
 
 
 /*END CONDITION*/
 end(quit) :- halt, !.
 
-end_condition(_) :-
-  hp(0),
-  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl,!.
+end_condition :-
+  health(0), !,
+  write('Anda telah terbunuh!, Permainan Selesai, Anda kalah.'),nl, end(quit), !.
 
-end_condition(_) :-
-  totalenemy(0),
-  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl,!.
+end_condition :-
+  totalenemy(0), !,
+  write('Selamat! Anda menjadi pejuang yang berdiri terakhir, selamaaatt !!!.'),nl, end(quit), !.
+
+ end_condition.

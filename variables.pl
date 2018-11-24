@@ -1,4 +1,3 @@
-
 /*Menandakan lokasi valid*/
 is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 
@@ -26,11 +25,10 @@ currLoc(1,1).
 /*inventory(none). -- inventory kosong*/
 inventory(nasjep).
 inventory(kunciC).
-inventory(ammo).
 inventory(jahim).
 
 equip(batuRuby).
-ammo(ammoRuby, 4).
+
 
 /*default object*/
 obj(armor, jahim).
@@ -42,7 +40,21 @@ obj(medicine,crisbar).
 obj(weapon,kunciC).
 obj(weapon,batuRuby).
 obj(weapon,ularPython).
-obj(weapon_ammo,ammo).
+obj(weaponammo,ammoC).
+obj(weaponammo,ammoRuby).
+obj(weaponammo,ammoPyhton).
+obj(weaponammo,ammonone).
+
+
+weapon_ammo(kunciC, ammoC).
+weapon_ammo(batuRuby, ammoRuby).
+weapon_ammo(ularPython, ammoPyhton).
+weapon_ammo(none, ammonone).
+
+ammo(ammoRuby, 4).
+ammo(ammoC, 0).
+ammo(ammoPython, 0).
+ammo(ammonone, 0).
 
 newarmor(jahim, 100).
 newarmor(jamal, 50).
@@ -58,7 +70,7 @@ damage(ularPython,40).
 
 /*default lokasi object*/
 objLoc(kunciC, 3, 4).
-objLoc(ammo, 8, 9).
+objLoc(ammoC, 8, 9).
 objLoc(ekado, 1, 4).
 objLoc(sweater, 6, 8).
 
@@ -71,8 +83,6 @@ loc(2,2,'kbl').
 /*default deadzone*/
 
 disDeadzone(1).
-
-deadzone(9,1).
 
 deadzone(0,0).
 deadzone(0,1).
@@ -119,4 +129,3 @@ deadzone(8,11).
 deadzone(9,11).
 deadzone(10,11).
 deadzone(11,11).
-

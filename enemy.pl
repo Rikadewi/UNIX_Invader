@@ -5,7 +5,7 @@ enemy(2,badur,20,20).
 enemy(3,lukas,20,20).
 enemy(4,rika,20,20).
 enemy(5,alam,20,20).
-enemy(6,johanes,20,20).https://github.com/Rikadewi/UNIX_Invader.git
+enemy(6,johanes,20,20).
 enemy(7,tude,20,20).
 enemy(9,asyraf,20,20).
 enemy(10,asif,20,20).
@@ -177,17 +177,18 @@ attack_enemy :-
   currLoc(X,Y),
   enemyLoc(V,X,Y),
   equip(W),
-  ammo(WA),
+  weapon_ammo(W, AmmoW),
+  ammo(AmmoW, WA),
   totalenemy(N),
   write('A wild '),write(V),write(' appears!'),nl,
   write('Anda menggunakan '), write(W),nl,
-  write(A), write(' telah berhasil dinetralisir'),
+  write(V), write(' telah berhasil dinetralisir'),nl,
   retract(enemyLoc(V,X,Y)),
   retract(totalenemy(N)),
-  retract(ammo(WA)),
+  retract(ammo(AmmoW, WA)),
   WAnew is WA-1,
   Nnew is N-1,
-  asserta(ammo(WAnew)),
+  asserta(ammo(AmmoW, WAnew)),
   asserta(totalenemy(Nnew)).
 
 attack_enemy :-
