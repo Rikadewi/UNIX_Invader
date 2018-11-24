@@ -17,6 +17,7 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(totalenemy/1).
 :- dynamic(difficulty/1).
 :- dynamic(langkah/1).
+:- dynamic(maxinventory/1).
 
 /*Static Variable*/
 
@@ -44,13 +45,16 @@ obj(weapon,batuRuby).
 obj(weapon,ularPython).
 obj(weaponammo,ammoC).
 obj(weaponammo,ammoRuby).
-obj(weaponammo,ammoPyhton).
+obj(weaponammo,ammoPython).
 obj(weaponammo,ammonone).
+obj(bag,bagLv1). %nambah 1 inventory
+obj(bag,bagLv2). %nambah 2 inventory
+obj(bag,bagLv3). %nambah 3 inventory
 
 
 weapon_ammo(kunciC, ammoC).
 weapon_ammo(batuRuby, ammoRuby).
-weapon_ammo(ularPython, ammoPyhton).
+weapon_ammo(ularPython, ammoPython).
 weapon_ammo(kopiJava, ammoJava).
 weapon_ammo(none, ammonone).
 
@@ -78,12 +82,18 @@ objLoc(kunciC, 3, 4).
 objLoc(ammoC, 8, 9).
 objLoc(ekado, 1, 4).
 objLoc(slayerSparta, 6, 8).
+objLoc(bagLv1, 5, 5). 
+objLoc(bagLv2, 5, 4). 
+objLoc(bagLv3, 5, 3). 
 
 /*default peta*/
 loc(1,1,'hutan').
 loc(1,2,'hutan').
 loc(2,1,'hutan').
 loc(2,2,'kbl').
+
+/* default inventory */
+maxinventory(5).
 
 /*default deadzone*/
 

@@ -55,6 +55,11 @@ lookat(X,Y) :-
 	write('E '),!.
 
 lookat(X,Y) :-
+	obj(bag,Z),
+	objLoc(Z,X,Y),
+	write('B '),!.
+
+lookat(X,Y) :-
 	obj(medicine,Z),
 	objLoc(Z,X,Y),
 	write('M '),!.

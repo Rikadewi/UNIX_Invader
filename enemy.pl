@@ -106,21 +106,24 @@ move_enemy_atas(N) :-
 	enemyLoc(N,X,Y),
 	Xmove is X,
 	Ymove is Y-1,
-  \+deadzone(Xmove,Ymove), enemyaction(N,Xmove,Ymove),!.
+  \+deadzone(Xmove,Ymove), !,
+  enemyaction(N,Xmove,Ymove),
 	retract(enemyLoc(N,X,Y)),
-	asserta(enemyLoc(N,Xmove,Ymove)),
+	asserta(enemyLoc(N,Xmove,Ymove)).
+
 move_enemy_atas(N) :-
-	move_enemy_bawah(N), !.
+	move_enemy_kiri(N), !.
 
 move_enemy_kanan(A) :-
 	enemyLoc(A,X,Y),
 	Xmove is X+1,
 	Ymove is Y,
-  \+deadzone(Xmove,Ymove), enemyaction(A,Xmove,Ymove),!.
+  \+deadzone(Xmove,Ymove), !,
+  enemyaction(A,Xmove,Ymove),
 	retract(enemyLoc(A,X,Y)),
-	asserta(enemyLoc(A,Xmove,Ymove)),
+	asserta(enemyLoc(A,Xmove,Ymove)).
 move_enemy_kanan(N) :-
-	move_enemy_kiri(N), !.
+	move_enemy_bawah(N), !.
 
 move_enemy_kiri(N) :-
 	enemyLoc(N,X,Y),
