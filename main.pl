@@ -26,7 +26,8 @@ start :-
 	write('[2] Sparta Day 4'),nl,
 	write('[3] Ferguso'),nl,
 	write('Pilihan : '),
-	read(L),nl,
+	read(L),
+	asserta(difficulty(L)), nl,
 	write('Instruksi permainan'), nl,
 	do(help),
 	spawn_player,
@@ -44,17 +45,17 @@ do(help) :- showhelp, !.
 do(quit) :- write('end game'), nl, !.
 do(map) :- printLegend, !.
 do(save) :-	savegame, !.
-do(n) :- north, move_all_enemies,!.
-do(s) :- south, move_all_enemies,!.
-do(w) :- west, move_all_enemies,!.
-do(e) :- east, move_all_enemies,!.
-do(drop(X)) :- drop(X), move_all_enemies,!.
+do(n) :- north, move_all_enemies, langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(s) :- south, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(w) :- west, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(e) :- east, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(drop(X)) :- drop(X), move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 
 /* Fungsi yang BELUM di implementasikan (edit do di bawah sesuai kebutuhan)*/
 do(look) :-	look_around, nl, !.
-do(take(X)):- takes(X),move_all_enemies,!.
-do(use(X)):- uses(X),move_all_enemies,!.
-do(attack) :-	attack_enemy, move_all_enemies,!.
+do(take(X)):- takes(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(use(X)):- uses(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(attack) :-	attack_enemy, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(status) :- statuss,!.
 do(load) :-	loadgame, nl, !.
 do(_) :- write('Invalid Input'), nl, !.
@@ -64,6 +65,8 @@ savegame:-
 	open('savefile.txt',write,Save),
 	name(Nama_User),
 	write(Save,name(Nama_User)),write(Save,'.'),nl(Save),
+	difficulty(Level),
+	write(Save,difficulty(Level)),write(Save,'.'),nl(Save),
 	armor(Nama_Arm),
 	write(Save,armor(Nama_Arm)),write(Save,'.'),nl(Save),
 	health(Heal),
@@ -72,11 +75,14 @@ savegame:-
 	write(Save,equip(Eq)),write(Save,'.'),nl(Save),
 	currLoc(X,Y),
 	write(Save,currLoc(X,Y)),write(Save,'.'),nl(Save),
-
 	ammo(Nama,Amunisi),
 	write(Save,ammo(Nama,Amunisi)),write(Save,'.'),nl(Save),
 	totalenemy(Jumlah),
 	write(Save,totalenemy(Jumlah)),write(Save,'.'),nl(Save),
+	disDeadzone(Dead),
+	write(Save,disDeadzone(Dead)),write(Save,'.'),nl(Save),
+	langkah(L),
+	write(Save,langkah(L)),write(Save,'.'),nl(Save),
 	close(Save),
 	findall(I,inventory(I),ListInvent),
 	write_list_oneparam('savefile.txt',ListInvent,inventory),
@@ -156,6 +162,10 @@ loadgame:-
 	name(N),
 	ammo(Nammo,Mag),
 	totalenemy(E),
+	difficulty(L),
+	disDeadzone(D),
+	retractall(difficulty(L)),
+	retractall(disDeadzone(L)),
 	retractall(health(H)),
 	retractall(armor(A)),
 	retractall(currLoc(Px,Py)),
@@ -245,6 +255,33 @@ printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- deadzone(X,Y), !,  write('X '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 
+/*Smaller Map*/
+plusDeadzone:-
+	disDeadzone(D),
+	D1 is D-1,
+	D2 is 11-D1,
+	write('Peta Mengecil, Hati-hati dengan DEADZONE!!'),
+	upzone(D1,D2),
+	downzone(D1,D2),
+	leftzone(D1,D2),
+	rightzone(D1,D2).
+
+upzone(D1,D1):- asserta(deadzone(D1,D1)),!.
+upzone(D1,D2):- asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
+downzone(D2,D2):-asserta(deadzone(D2,D2)),!.
+downzone(D1,D2):- asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
+leftzone(D1,D1):-retract(deadzone(D1,D1)),!.
+leftzone(D1,D2):- Dnew is D2-1, asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
+rightzone(D2,D2):-retract(deadzone(D2,D2)),!.
+rightzone(D1,D2):- Dnew is D1+1, asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
+
+
+
+plusdisDeadzone(Count):- Count==26, disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
+plusdisDeadzone(Count):- Count==21,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
+plusdisDeadzone(Count):- Count==15,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
+plusdisDeadzone(Count):- Count==8,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
+plusdisDeadzone(Count):-!.
 /*MOVEMENT*/
 
 north :- currLoc(X,Y), X == 0, !, write('di paling atas'), nl, minushp, !.

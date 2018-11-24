@@ -15,13 +15,15 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 :- dynamic(deadzone/2). %(x, y)
 :- dynamic(ammo/2). %nama ammo, jumlah
 :- dynamic(totalenemy/1).
-
+:- dynamic(difficulty/1).
+:- dynamic(langkah/1).
 
 /*Static Variable*/
 
 health(50).
 armor(40).
 currLoc(1,1).
+langkah(0).
 /*inventory(none). -- inventory kosong*/
 inventory(nasjep).
 inventory(kunciC).
