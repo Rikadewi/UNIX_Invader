@@ -49,10 +49,10 @@ do(quit) :-
 	write('>> '), read(X), end(X), !.
 do(map) :- printLegend, !.
 do(save) :-	savegame, !.
-do(n) :- north, move_all_enemies, langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
-do(s) :- south, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
-do(w) :- west, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
-do(e) :- east, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(n) :- north, printinfo, move_all_enemies, langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(s) :- south, printinfo, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(w) :- west, printinfo, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(e) :- east, printinfo, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(drop(X)) :- drop(X), move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(look) :-	look_around, nl, !.
 do(take(X)):- notmaxinv, !, takes(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
@@ -62,6 +62,101 @@ do(attack) :-	attack_enemy, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 i
 do(status) :- statuss,!.
 do(load) :-	loadgame, nl, !.
 do(_) :- write('Invalid Input'), nl, !.
+
+printinfo :-
+	currLoc(X,Y),
+	deadzone(X,Y),!,
+	write('Deadzone mengurangi health!'), nl,
+	printinfoW,
+	printinfoE,
+	printinfoN,
+	printinfoS, !.
+
+printinfo :-
+	currLoc(X,Y),
+	loc(X,Y,A),
+	write('Saat ini Anda sedang ada di '),
+	write(A), nl,
+	printinfoW,
+	printinfoE,
+	printinfoN,
+	printinfoS, !.
+
+printinfoW :-
+	currLoc(X,Y),
+	Y1 is Y-1,
+	deadzone(X,Y1),!,
+	write('Sebelah baratmu adalah Deadzone hati-hati!'), nl, !.
+
+printinfoW :-
+	currLoc(X,Y),
+	Y1 is Y-1,
+	Y1 =:= -1, !,
+	write('Sebelah baratmu adalah tembok, Ferguso'), nl, !.
+
+printinfoW :-
+	currLoc(X,Y),
+	Y1 is Y-1,
+	loc(X,Y1,A),
+	write('Sebelah barat Anda adalah '),
+	write(A), nl, !.
+
+printinfoE :-
+	currLoc(X,Y),
+	Y1 is Y+1,
+	deadzone(X,Y1),!,
+	write('Sebelah timurmu adalah Deadzone hati-hati!'), nl, !.
+
+printinfoE :-
+	currLoc(X,Y),
+	Y1 is X+1,
+	Y1 =:= 12,!,
+	write('Sebelah timurmu adalah tembok, Ferguso'), nl, !.
+
+printinfoE :-
+	currLoc(X,Y),
+	Y1 is Y+1,
+	loc(X,Y1,A),
+	write('Sebelah timur Anda adalah '),
+	write(A), nl, !.
+
+printinfoS :-
+	currLoc(X,Y),
+	X1 is X+1,
+	deadzone(X1,Y),!,
+	write('Sebelah selatanmu adalah Deadzone hati-hati!'), nl, !.
+
+printinfoS :-
+	currLoc(X,Y),
+	X1 is X+1,
+	X1 =:= 12,!,
+	write('Sebelah selatanmu adalah tembok, Ferguso'), nl, !.
+
+printinfoS :-
+	currLoc(X,Y),
+	X1 is X+1,
+	loc(X1,Y,A),
+	write('Sebelah selatan Anda adalah '),
+	write(A), nl, !.
+
+printinfoN :-
+	currLoc(X,Y),
+	X1 is X-1,
+	deadzone(X1,Y),!,
+	write('Sebelah utaramu adalah Deadzone hati-hati!'), nl, !.
+
+printinfoN :-
+	currLoc(X,Y),
+	X1 is X-1,
+	X1 =:= 0,!,
+	write('Sebelah utaramu adalah tembok, Ferguso'), nl, !.
+
+printinfoN :-
+	currLoc(X,Y),
+	X1 is X-1,
+	loc(X1,Y,A),
+	write('Sebelah utara Anda adalah '),
+	write(A), nl, !.
 
 /* inventory */
 notmaxinv :-
@@ -318,19 +413,19 @@ plusdisDeadzone(Count):- Count==8,disDeadzone(D) , D2 is D+1,retract(disDeadzone
 plusdisDeadzone(Count):-!.
 /*MOVEMENT*/
 
-north :- currLoc(X,Y), X == 0, !, write('di paling atas'), nl, minushp, !.
+north :- currLoc(X,Y), X == 0, !, write('Tidak bisa ke atas'), nl, minushp, !.
 north :- currLoc(X,Y), X1 is X-1, deadzone(X1,Y), !,retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 north :- currLoc(X,Y), X1 is X-1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-south :- currLoc(X,Y), X == 11, !, write('di paling bawah'), nl, minushp, !.
+south :- currLoc(X,Y), X == 11, !, write('Tidak bisa ke bawah'), nl, minushp, !.
 south :- currLoc(X,Y), X1 is X+1, deadzone(X1,Y), !, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), minushp, !.
 south :- currLoc(X,Y), X1 is X+1, retract(currLoc(X,Y)), asserta(currLoc(X1,Y)), !.
 
-west :- currLoc(X,Y), Y == 0, !, write('di paling kiri'), nl, minushp, !.
+west :- currLoc(X,Y), Y == 0, !, write('Tidak bisa ke kiri'), nl, minushp, !.
 west :- currLoc(X,Y), Y1 is Y-1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 west :- currLoc(X,Y), Y1 is Y-1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
-east :- currLoc(X,Y), Y == 11, !, write('di paling kanan'), nl, minushp, !.
+east :- currLoc(X,Y), Y == 11, !, write('Tidak bisa ke kanan'), nl, minushp, !.
 east :- currLoc(X,Y), Y1 is Y+1, deadzone(X,Y1), !, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), minushp, !.
 east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), !.
 
@@ -617,7 +712,7 @@ ammo_name(3, ammoPython).
 /*END CONDITION*/
 end(n) :- 
 	write('Anda memang seorang warrior sejati, '), 
-	name(X), write(X), write('!') nl, !.
+	name(X), write(X), write('!'), nl, !.
 
 end(y) :- halt, !.
 

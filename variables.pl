@@ -119,7 +119,7 @@ loc(3,6,'Plaza Widya').
 loc(3,7,'Perpustakaan').
 loc(3,8,'Jalan Aspal').
 loc(3,9,'Gedung Kimia').
-loc(3,10,'Hutan bagia timur ITB').
+loc(3,10,'Hutan bagian timur ITB').
 loc(4,1,'Hutan bagian barat ITB').
 loc(4,2,'GKU Barat').
 loc(4,3,'GKU Barat').
@@ -190,6 +190,7 @@ loc(10,7,'Aula Timur').
 loc(10,8,'Lapangan SR').
 loc(10,9,'Lapangan SR').
 loc(10,10,'Lapangan SR').
+
 /* default inventory */
 maxinventory(5).
 
