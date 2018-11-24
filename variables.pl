@@ -43,6 +43,7 @@ obj(medicine,crisbar).
 obj(weapon,kunciC).
 obj(weapon,batuRuby).
 obj(weapon,ularPython).
+obj(weapon,none).
 obj(weaponammo,ammoC).
 obj(weaponammo,ammoRuby).
 obj(weaponammo,ammoPython).

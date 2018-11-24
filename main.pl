@@ -18,31 +18,35 @@ start :-
 	write('████████▀   ▀█   █▀  █▀   ████       ███▄      █▀    ▀█   █▀   ▀██████▀    ███    █▀  ████████▀    ██████████   ███    ███  ▄████████▀  '),nl
 	,nl,nl,
 
-	write('Masukkan Nama (dimulai huruf kecil): '),
+	write('Hai warrior! Siapa namamu? (dimulai huruf kecil)'), nl,
+	write('>> '),
 	read(X),
+	write('Semua orang sudah dibrainwash oleh Joshua! Tugasmu adalah membersihkan dunia dari para zombie yang masih berkeliaran.'), nl,
 	asserta(name(X)),
-	write('Pilih Tingkat stress yang anda inginkan : '),nl,
+	write('Pilih tingkat stress yang Anda inginkan : '),nl,
 	write('[1] Kentang'),nl,
 	write('[2] Sparta Day 4'),nl,
 	write('[3] Ferguso'),nl,
 	write('Pilihan : '),
 	read(L),
 	asserta(difficulty(L)), nl,
-	write('Instruksi permainan'), nl,
+	write('Nah sekarang saatnya beraksi!'), nl,
 	do(help),
 	spawn_player,
 	spawn_level(L),nl, %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
 
 	repeat,
 		write('>> '), /* Menandakan input */
-		read(Input),nl, /*Meminta input dari usedr */
+		read(Input),nl, /*Meminta input dari user */
 		do(Input),nl, /*Menjadlankan do(Input) */
-		end_condition,
-		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
+		end_condition. /*apabila end end condition terpenuhi maka program akan berakhir */
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
 do(help) :- showhelp, !.
-do(quit) :- write('end game'), nl, !.
+do(quit) :- 
+	write('Seorang warrior tidak pernah lari dari tanggung jawab.'), nl, 
+	write('Apakah Anda yakin ingin meninggalkan permainan?(y/n)'), nl,
+	write('>> '), read(X), end(X), !.
 do(map) :- printLegend, !.
 do(save) :-	savegame, !.
 do(n) :- north, move_all_enemies, langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
@@ -50,8 +54,6 @@ do(s) :- south, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retra
 do(w) :- west, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(e) :- east, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(drop(X)) :- drop(X), move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
-
-/* Fungsi yang BELUM di implementasikan (edit do di bawah sesuai kebutuhan)*/
 do(look) :-	look_around, nl, !.
 do(take(X)):- notmaxinv, !, takes(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(take(X)):- write('Inventory full, ferguso'), nl, !.
@@ -221,23 +223,25 @@ load_all(Load):-
 		at_end_of_stream(Load).
 
 showhelp :-
-	write('Nama Anda: '), name(X),
-	write(X), nl,
-	write('help'), nl,
-	write('quit'), nl,
-	write('look'), nl,
-	write('map'), nl,
-	write('n'), nl,
-	write('s'), nl,
-	write('e'), nl,
-	write('w'), nl,
-	write('take'), nl,
-	write('drop'), nl,
-	write('use'), nl,
-	write('attack'), nl,
-	write('status'), nl,
-	write('save'), nl,
-	write('load'), nl, !.
+	name(X),
+	write(X), 
+	write(' kamu adalah warrior terpilih yang ditakdirkan untuk melawan si jahat Joshua'), nl,
+	write('Berikut aksi yang dapat kamu lakukan untuk menyelamatkan dunia'), nl,
+	write('[1] help'), nl,
+	write('[2] quit'), nl,
+	write('[3] look'), nl,
+	write('[4] map'), nl,
+	write('[5] n'), nl,
+	write('[6] s'), nl,
+	write('[7] e'), nl,
+	write('[8] w'), nl,
+	write('[9] take'), nl,
+	write('[10] drop'), nl,
+	write('[11] use'), nl,
+	write('[12] attack'), nl,
+	write('[13] status'), nl,
+	write('[14] save'), nl,
+	write('[15] load'), nl, !.
 
 printLegend :-
 	write('Keterangan:'), nl,
@@ -572,30 +576,55 @@ drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 /* Supply Drop */
 supply :-
 	disDeadzone(A),
-	A1 is 11-A,
+	A1 is 11-A+1,
 	random(A,A1,X),
 	random(A,A1,Y),
-	asserta(objLoc(ekado,X,Y)),
+	random(1,4,M),
+	medic_name(M, M_name),
+	asserta(objLoc(M_name,X,Y)),
 	random(A,A1,X2),
 	random(A,A1,Y2),
-	asserta(objLoc(jahim,X2,Y2)),
+	random(1,4,A),
+	armor_name(A, A_name),
+	asserta(objLoc(A_name,X2,Y2)),
 	random(A,A1,X3),
 	random(A,A1,Y3),
-	asserta(objLoc(kunciC,X3,Y3)),
+	random(1,4,W),
+	weapon_name(W, W_name),
+	asserta(objLoc(W_name,X3,Y3)),
 	random(A,A1,X4),
 	random(A,A1,Y4),
-	asserta(objLoc(ammoC,X4,Y4)), !.
+	random(1,4,A),
+	ammo_name(O, O_name),
+	asserta(objLoc(O_name,X4,Y4)), !.
 
+medic_name(1, ekado).
+medic_name(2, nasjep).
+medic_name(3, crisbar).
+
+armor_name(1, jahim).
+armor_name(1, jamal).
+armor_name(1, slayerSparta).
+
+weapon_name(1, kunciC).
+weapon_name(2, batuRuby).
+weapon_name(3, ularPython).
+
+ammo_name(1, ammoC).
+ammo_name(2, ammoRuby).
+ammo_name(3, ammoPython).
 
 /*END CONDITION*/
-end(quit) :- halt, !.
+end(n) :- 
+	write('Anda memang seorang warrior sejati, '), 
+	name(X), write(X), write('!') nl, !.
+
+end(y) :- halt, !.
 
 end_condition :-
   health(0), !,
-  write('Nyawa Anda hilang. Permainan Selesai, Anda kalah.'),nl, end(quit), !.
+  write('Nyawa Anda hilang. Joshua menang, ternyata hidup tidak semudah itu Ferguso'),nl, end(y), !.
 
 end_condition :-
   totalenemy(0), !,
-  write('Anda telah memusnahkan seluruh anggota UNIX, selamaaatt !!!.'),nl, end(quit), !.
-
- end_condition.
+  write('Wow! Anda telah memusnahkan seluruh anggota UNIX, selamaaatt!!!'),nl, end(y), !.
