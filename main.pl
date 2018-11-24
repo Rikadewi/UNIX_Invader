@@ -7,6 +7,7 @@
 /*Rules*/
 start :-
 
+
 	write('███    █▄  ███▄▄▄▄    ▄█  ▀████    ▐████▀       ▄█  ███▄▄▄▄    ▄█    █▄     ▄████████ ████████▄     ▄████████    ▄████████    ▄████████ '), nl,
 	write('███    ███ ███▀▀▀██▄ ███    ███▌   ████▀       ███  ███▀▀▀██▄ ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███   ███    ███ '),nl,
 	write('███    ███ ███   ███ ███▌    ███  ▐███         ███▌ ███   ███ ███    ███   ███    ███ ███    ███   ███    █▀    ███    ███   ███    █▀  '),nl,
@@ -20,13 +21,25 @@ start :-
 	write('Masukkan Nama (dimulai huruf kecil): '),
 	read(X),
 	asserta(name(X)),
+
 	write('Instruksi permainan'), nl,
 	do(help),
 	spawn,
+
+	write('Pilih Tingkat stress yang anda inginkan : '),nl,
+	write('[1] Kentang'),nl,
+	write('[2] Sparta Day 4'),nl,
+	write('[3] Ferguso'),nl,
+	write('Pilihan : '),
+	read(L),nl,
+	write('Instruksi permainan'), nl,
+	do(help),
+	spawn_player,
+	spawn_level(L),nl, %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
+
 	repeat,
 		write('>> '), /* Menandakan input */
-		read(Input), /*Meminta input dari usedr */
-		
+		read(Input),nl, /*Meminta input dari usedr */
 		do(Input),nl, /*Menjadlankan do(Input) */
 		end(Input). /*apabila bernilai end(quit) maka program akan berakhir */
 
@@ -47,9 +60,10 @@ do(take(X)):- takes(X),move_all_enemies,!.
 do(use(X)):- uses(X),move_all_enemies,!.
 do(attack) :-	write('attack'), nl, move_all_enemies,!.
 do(status) :- statuss,!.
-do(load) :-	write('load'), nl, !.
+do(load) :-	loadgame, nl, !.
 do(_) :- write('Invalid Input'), nl, !.
 
+/*Kumpulan rule untuk save game*/
 savegame:-
 	open('savefile.txt',write,Save),
 	name(Nama_User),
@@ -62,16 +76,126 @@ savegame:-
 	write(Save,equip(Eq)),write(Save,'.'),nl(Save),
 	currLoc(X,Y),
 	write(Save,currLoc(X,Y)),write(Save,'.'),nl(Save),
-	ammo(Amunisi),
-	write(Save,ammo(Amunisi)),write(Save,'.'),nl(Save),
-	forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),
-	forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
+
+	ammo(Nama,Amunisi),
+	write(Save,ammo(Nama,Amunisi)),write(Save,'.'),nl(Save),
+	totalenemy(Jumlah),
+	write(Save,totalenemy(Jumlah)),write(Save,'.'),nl(Save),
+	close(Save),
+	findall(I,inventory(I),ListInvent),
+	write_list_oneparam('savefile.txt',ListInvent,inventory),
+	findall(Nama_Object,objLoc(Nama_Object,OX,OY),ListObj),
+	findall(OX,objLoc(Nama_Object,OX,OY),ListObjX),
+	findall(OY,objLoc(Nama_Object,OX,OY),ListObjY),
+	write_list_threeparam('savefile.txt',ListObj,ListObjX,ListObjY,objLoc),
+	findall(Nama_Enemy,enemyLoc(Nama_Enemy,EX,EY),ListEnemy),
+	findall(EX,enemyLoc(Nama_Object,EX,EY),ListEnemyX),
+	findall(EY,enemyLoc(Nama_Object,EX,EY),ListEnemyY),
+	write_list_threeparam('savefile.txt',ListEnemy,ListEnemyX,ListEnemyY,enemyLoc),
+	findall(Dx,deadzone(Dx,Dy),ListDzoneX),
+	findall(Dy,deadzone(Dx,Dy),ListDzoneY),
+	write_list_twoparam('savefile.txt',ListDzoneX,ListDzoneY,deadzone).
+
+	/*forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),*/
+	/*forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
 	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
 	forall(deadzone(Dx,Dy),(write(Save,deadzone(Dx,Dy)),write(Save,'.'),nl(Save))),
-	close(Save).
+	*/
+
+/*Bagian rekursif untuk save game*/
+writeData_One(_,[],Name) :- !.
+writeData_One(S,[X1|Tail],Name) :-
+	write(S,Name),
+	write(S,'('),
+	write(S,X1),
+	write(S,')'),
+	write(S,'.'),
+	nl(S),
+	writeData_One(S,Tail,Name).
+
+write_list_oneparam(NamaFile,L,Name) :-
+	open(NamaFile,append,S),
+	repeat,
+	writeData_One(S,L,Name),
+	close(S).
+
+writeData_three(_,[],[],[],Name) :- !.
+writeData_three(S,[X1|Tail1],[X2|Tail2],[X3|Tail3],Name) :-
+	write(S,Name),
+	write(S,'('),
+	write(S,(X1,X2,X3)),
+	write(S,')'),
+	write(S,'.'),
+	nl(S),
+	writeData_three(S,Tail1,Tail2,Tail3,Name).
+
+write_list_threeparam(NamaFile,L1,L2,L3,Name) :-
+	open(NamaFile,append,S),
+	repeat,
+	writeData_three(S,L1,L2,L3,Name),
+	close(S).
+
+writeData_two(_,[],[],Name) :- !.
+writeData_two(S,[X1|Tail1],[X2|Tail2],Name) :-
+	write(S,Name),
+	write(S,'('),
+	write(S,(X1,X2)),
+	write(S,')'),
+	write(S,'.'),
+	nl(S),
+	writeData_two(S,Tail1,Tail2,Name).
+
+write_list_twoparam(NamaFile,L1,L2,Name) :-
+	open(NamaFile,append,S),
+	repeat,
+	writeData_two(S,L1,L2,Name),
+	close(S).
+
+/*Bagian Load Game*/
+loadgame:-
+	health(H),
+	armor(A),
+	currLoc(Px,Py),
+	equip(Eq),
+	name(N),
+	ammo(Nammo,Mag),
+	totalenemy(E),
+	retractall(health(H)),
+	retractall(armor(A)),
+	retractall(currLoc(Px,Py)),
+	retractall(equip(Eq)),
+	retractall(name(N)),
+	retractall(ammo(Nammo,Mag)),
+	retractall(totalenemy(E)),
+	remove_all_obj,
+	remove_all_deadzone,
+	remove_all_invent,
+	remove_all_enemies,
+	open('savefile.txt',read,Load),
+	load_all(Load),
+	close(Load).
+
+/*Rule pendukung untuk load game*/
+remove_all_obj :-
+	objLoc(_,_,_),retractall(objLoc(_,_,_)),!.
+remove_all_obj :- !.
+
+remove_all_deadzone :-
+	deadzone(_,_),retractall(deadzone(_,_)),!.
+remove_all_deadzone:-!.
+
+remove_all_invent :-
+	inventory(_),retractall(inventory(_)),!.
+remove_all_invent :-!.
+
+load_all(Load):-
+	repeat,
+		read(Load,L),
+		asserta(L),
+		at_end_of_stream(Load).
 
 showhelp :-
-	name(X),
+	write('Nama Anda: '), name(X),
 	write(X), nl,
 	write('help'), nl,
 	write('quit'), nl,
@@ -100,6 +224,14 @@ printLegend :-
 	write('>> X: Deadzone'), nl, nl,
 	printmap(0,0),!.
 
+/*Random spawn player*/
+spawn_player:-
+	currLoc(X,Y),
+	set_seed(1), randomize,
+	random(1,11,Xnew),
+	random(1,11,Ynew),
+	retract(currLoc(X,Y)),
+	asserta(currLoc(Xnew,Ynew)),!.
 
 /*PRINT MAP*/
 is_loc_valid(X,Y) :- X<11, Y<11, X>0, Y>0, forall(deadzone(X1,Y1), X =:= X1), forall(deadzone(X2,Y2), Y2 =:= Y), !.
@@ -134,13 +266,17 @@ east :- currLoc(X,Y), Y1 is Y+1, retract(currLoc(X,Y)), asserta(currLoc(X,Y1)), 
 
 /* Status*/
 statuss :-
+	name(X),
+	write('Nama : '), write(X),nl,
 	health(Y),
 	write('Health : '), write(Y),nl,
 	armor(N),
 	write('Armor : '), write(N),nl,
 	equip(W),
 	write('Weapon : '), write(W),nl,
+
 	weapon_ammo(W, B), ammo(B, A)/*, ammo(A)*/,
+
 	write('Ammo : '), write(A),nl,
 	write('List Inventory : '),
 	findall(I,inventory(I),Listinvent), nl,
@@ -177,6 +313,7 @@ pakai_obat(nasjep) :- health(X), X+50 > 100,retract(health(X)),asserta(health(10
 pakai_obat(nasjep) :- health(X), W is X+50,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
 pakai_obat(ekado) :- health(X) ,X+30 > 100,retract(health(X)),asserta(health(100)), write('Darahmu : '),write(100),nl,write('Full bosque'),nl,!.
 pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)), write('Darahmu : '),write(W),nl,!.
+
 
 add_ammo(ammoC) :- newammo(ammoC, N), ammo(ammoC, X), W is X + N, retract(ammo(ammoC, X)), asserta(ammo(ammoC, W)), write('Total ammoC adalah : '), write(W),nl,!.
 add_ammo(ammoRuby) :- newammo(ammoRuby, N), ammo(ammoRuby, X), W is X + N, retract(ammo(ammoRuby, X)), asserta(ammo(ammoRuby, W)), write('Total ammoRuby adalah : '), write(W),nl,!.
@@ -215,6 +352,7 @@ equip_weapon(ularPython) :- equip(X), weapon_ammo(X, Z), ammo(Z, N), /*ammo(N), 
 						write('Ammo yang kamu punya untuk senjata ini adalah '), write(J),nl,!. */
 						
 /*equip_weapon(kunciC) :- equip(X), weapon_ammo(kunciC, N), ammo(N), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
+
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
 equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!. */
 /* equip_weapon(laptop) :- equip(X), retract(equip(X)),asserta(equip(laptop)), write('senjata yang dipakai : Laptop (Damage attack : 100 !!! Ngeri bosque)'),nl,!. */
@@ -312,6 +450,24 @@ drop(ammo) :- ammo(X), newammo(ammo, X), !, retract(ammo(X)), currLoc(A,B), asse
 drop(ammo) :- ammo(X),!, retract(ammo(X)), asserta(ammo(0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
 
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
+
+/* Supply Drop */
+supply :- 
+	disDeadzone(A),
+	A1 is 11-A,
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(ekado,X,Y)),
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(jahim,X,Y)),
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(kunciC,X,Y)),
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(ammoC,X,Y)), !,
+
 
 /*END CONDITION*/
 end(quit) :- halt, !.
