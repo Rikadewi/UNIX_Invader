@@ -1,3 +1,4 @@
+
 /*Menandakan lokasi valid*/
 is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 
@@ -118,3 +119,4 @@ deadzone(8,11).
 deadzone(9,11).
 deadzone(10,11).
 deadzone(11,11).
+

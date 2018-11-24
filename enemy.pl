@@ -5,7 +5,7 @@ enemy(2,badur,20,20).
 enemy(3,lukas,20,20).
 enemy(4,rika,20,20).
 enemy(5,alam,20,20).
-enemy(6,johanes,20,20).
+enemy(6,johanes,20,20).https://github.com/Rikadewi/UNIX_Invader.git
 enemy(7,tude,20,20).
 enemy(9,asyraf,20,20).
 enemy(10,asif,20,20).
@@ -225,3 +225,4 @@ hitplayer(V,1) :-
 
 hitplayer(V,0) :-
   write('Anda berhasil menghindarnya!'),nl.
+
