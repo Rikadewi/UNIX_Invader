@@ -53,12 +53,26 @@ do(drop(X)) :- drop(X), move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+
 
 /* Fungsi yang BELUM di implementasikan (edit do di bawah sesuai kebutuhan)*/
 do(look) :-	look_around, nl, !.
-do(take(X)):- takes(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(take(X)):- notmaxinv, !, takes(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
+do(take(X)):- write('Inventory full, ferguso'), nl, !.
 do(use(X)):- uses(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(attack) :-	attack_enemy, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(status) :- statuss,!.
 do(load) :-	loadgame, nl, !.
 do(_) :- write('Invalid Input'), nl, !.
+
+/* inventory */
+notmaxinv :-
+	findall(I,inventory(I),L),
+	count(L,N),
+	maxinventory(X),
+	N<X.
+
+count([],0).
+count([H|T],N) :- 
+	count(T, N1),
+	N is N1+1, !.
+
 
 /*Kumpulan rule untuk save game*/
 savegame:-
@@ -247,10 +261,11 @@ printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
 printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 printmap(X,0) :- write('X '), printmap(X,1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(weapon_ammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
+printmap(X,Y) :- objLoc(A,X,Y), obj(weaponammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- objLoc(A,X,Y), obj(weapon, A), !,  write('W '), Y1 is Y+1, printmap(X,Y1), !.
+printmap(X,Y) :- objLoc(A,X,Y), obj(bag, A), !,  write('B '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- deadzone(X,Y), !,  write('X '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
@@ -406,6 +421,35 @@ equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), 
 equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!. */
 /* equip_weapon(laptop) :- equip(X), retract(equip(X)),asserta(equip(laptop)), write('senjata yang dipakai : Laptop (Damage attack : 100 !!! Ngeri bosque)'),nl,!. */
 
+plusinv(bagLv1) :-
+	maxinventory(N),
+	N1 is N+1,
+	retract(maxinventory(N)),
+	asserta(maxinventory(N1)),!.
+
+plusinv(bagLv2) :-
+	maxinventory(N),
+	N1 is N+2,
+	retract(maxinventory(N)),
+	asserta(maxinventory(N1)),!.
+
+plusinv(bagLv3) :-
+	maxinventory(N),
+	N1 is N+3,
+	retract(maxinventory(N)),
+	asserta(maxinventory(N1)),!.
+
+/* Take bag */
+takes(X):-
+	obj(bag,X),
+	objLoc(X,Y,Z),
+	currLoc(Y,Z),!,
+	plusinv(X),
+	retract(objLoc(X,Y,Z)),
+	write('item '), write(X), write(' diambil'), nl, 
+	maxinventory(N),
+	write('Maximum inventory berubah menjadi '), write(N), nl, !.
+
 /* Take armor */
 takes(X):-
 	obj(armor,X),
@@ -503,10 +547,11 @@ drop(X) :- equip(X), weapon_ammo(X, A),  ammo(A, N), N == 0, !,
 drop(X) :- equip(X), weapon_ammo(X, A),  ammo(A, N), !,
 	retract(equip(X)),
 	retract(ammo(A, N)),
-	currLoc(A,B), asserta(objLoc(X, A, B)),
+	currLoc(C,B), 
+	asserta(objLoc(X, C, B)),
 	asserta(equip(none)),
 	asserta(ammo(A, 0)),
-	asserta(ammo(none, 0)),
+	asserta(ammo(ammonone, 0)),
 	write(X), write(' berhasil di drop'), nl,
 	write('Amunisi hilang dari peta'), nl,!.
 
