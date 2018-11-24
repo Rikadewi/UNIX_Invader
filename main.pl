@@ -20,15 +20,9 @@ start :-
 	write('Masukkan Nama (dimulai huruf kecil): '),
 	read(X),
 	asserta(name(X)),
-	write('Pilih Tingkat stress yang anda inginkan : '),nl,
-	write('[1] Kentang'),nl,
-	write('[2] Sparta Day 4'),nl,
-	write('[3] Ferguso'),nl,
-	write('Pilihan : '),
-	read(L),
 	write('Instruksi permainan'), nl,
 	do(help),
-	spawn_level(L), %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
+	spawn,
 	repeat,
 		write('>> '), /* Menandakan input */
 		read(Input), /*Meminta input dari usedr */
@@ -52,7 +46,7 @@ do(drop(X)) :- drop(X), move_all_enemies,!.
 do(look) :-	look_around, nl, !.
 do(take(X)):- takes(X),move_all_enemies,!.
 do(use(X)):- uses(X),move_all_enemies,!.
-do(attack) :-	attack_enemy, move_all_enemies,!.
+do(attack) :-	write('attack'), nl, move_all_enemies,!.
 do(status) :- statuss,!.
 do(load) :-	write('load'), nl, !.
 do(_) :- write('Invalid Input'), nl, !.
@@ -193,7 +187,6 @@ pakai_obat(ekado) :- health(X) ,W is X+30,retract(health(X)),asserta(health(W)),
 
 equip_ammo(ammoRuby) :- ammo(A,X), A == 'ammoRuby', W is X+5, retract(ammo(X)), asserta(ammo(W)), write('Ammo terpakai'), nl, write('Sekarang jumlah ammo kamu adalah :'), write(W),nl,!.
 
-
 equip_weapon(kunciC) :- equip(X), retract(equip(X)),asserta(equip(kunciC)), write('senjata yang dipakai : kunciC (Damage attack: 20)'),nl,!.
 equip_weapon(batuRuby) :- equip(X), retract(equip(X)),asserta(equip(batuRuby)), write('senjata yang dipakai : batuRuby (Damage attack : 30)'),nl,!.
 equip_weapon(ularPython) :- equip(X), retract(equip(X)),asserta(equip(ularPython)), write('senjata yang dipakai : ularPython (Damage attack : 40)'),nl,!.
@@ -278,6 +271,24 @@ drop(ammo) :- ammo(X), newammo(ammo, X), !, retract(ammo(X)), currLoc(A,B), asse
 drop(ammo) :- ammo(X),!, retract(ammo(X)), asserta(ammo(0)), write('ammmo sudah berubah sehingga hilang dari peta'), nl, !.
 
 drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
+
+/* Supply Drop */
+supply :- 
+	disDeadzone(A),
+	A1 is 11-A,
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(ekado,X,Y)),
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(jahim,X,Y)),
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(kunciC,X,Y)),
+	random(A,A1,X),
+	random(A,A1,Y),
+	asserta(objLoc(ammoC,X,Y)), !,
+
 
 /*END CONDITION*/
 end(quit) :- halt, !.
