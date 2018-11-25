@@ -8,12 +8,12 @@ printmap(X,11) :- write('X '), nl, X1 is X+1, printmap(X1,0), !.
 % printmap(11,Y) :- write('X '), Y1 is Y+1, printmap(11,Y1), !.
 % printmap(0,Y) :- write('X '), Y1 is Y+1, printmap(0,Y1),!.
 % printmap(X,0) :- write('X '), printmap(X,1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(weaponammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(weapon, A), !,  write('W '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- objLoc(A,X,Y), obj(bag, A), !,  write('B '), Y1 is Y+1, printmap(X,Y1), !.
-printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !.
+% printmap(X,Y) :- objLoc(A,X,Y), obj(weaponammo, A), !,  write('O '), Y1 is Y+1, printmap(X,Y1), !.
+% printmap(X,Y) :- objLoc(A,X,Y), obj(armor, A), !,  write('A '), Y1 is Y+1, printmap(X,Y1), !.
+% printmap(X,Y) :- objLoc(A,X,Y), obj(medicine, A), !,  write('M '), Y1 is Y+1, printmap(X,Y1), !.
+% printmap(X,Y) :- objLoc(A,X,Y), obj(weapon, A), !,  write('W '), Y1 is Y+1, printmap(X,Y1), !.
+% printmap(X,Y) :- objLoc(A,X,Y), obj(bag, A), !,  write('B '), Y1 is Y+1, printmap(X,Y1), !.
+% printmap(X,Y) :- enemyLoc(_,X,Y), !,  write('E '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- deadzone(X,Y), !,  write('X '), Y1 is Y+1, printmap(X,Y1), !.
 printmap(X,Y) :- write('_ '), Y1 is Y+1, printmap(X,Y1), !.
 

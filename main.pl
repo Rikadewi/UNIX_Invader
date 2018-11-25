@@ -19,7 +19,7 @@ start :-
 	write('Hai warrior! Siapa namamu? (dimulai huruf kecil)'), nl,
 	write('>> '),
 	read(X),
-	write('Semua orang sudah dibrainwash oleh Joshua! Tugasmu adalah membersihkan dunia dari para zombie yang masih berkeliaran.'), nl,
+	write('Semua anak UNIX telah dibrainwash oleh Joshua saat praktikum Logif! Tugasmu adalah membersihkan ITB dari para zombie yang masih berkeliaran.'), nl,
 	asserta(name(X)),
 	write('Pilih tingkat stress yang Anda inginkan : '),nl,
 	write('[1] Kentang'),nl,
@@ -41,8 +41,8 @@ start :-
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
 do(help) :- showhelp, !.
-do(quit) :- 
-	write('Seorang warrior tidak pernah lari dari tanggung jawab.'), nl, 
+do(quit) :-
+	write('Seorang warrior tidak pernah lari dari tanggung jawab.'), nl,
 	write('Apakah Anda yakin ingin meninggalkan permainan?(y/n)'), nl,
 	write('>> '), read(X), end(X), !.
 do(map) :- printLegend, !.
@@ -223,7 +223,7 @@ load_all(Load):-
 
 showhelp :-
 	name(X),
-	write(X), 
+	write(X),
 	write(' kamu adalah warrior terpilih yang ditakdirkan untuk melawan si jahat Joshua'), nl,
 	write('Berikut aksi yang dapat kamu lakukan untuk menyelamatkan dunia'), nl,
 	write('[1] help'), nl,
@@ -435,8 +435,8 @@ ammo_name(2, ammoRuby).
 ammo_name(3, ammoPython).
 
 /*END CONDITION*/
-end(n) :- 
-	write('Anda memang seorang warrior sejati, '), 
+end(n) :-
+	write('Anda memang seorang warrior sejati, '),
 	name(X), write(X), write('!'), nl, !.
 
 end(y) :- halt, !.

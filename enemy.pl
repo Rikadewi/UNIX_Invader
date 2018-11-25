@@ -5,15 +5,15 @@ enemy(2,badur,kunciC,20).
 enemy(3,lukas,kunciC,20).
 enemy(4,rika,kunciC,20).
 enemy(5,alam,kunciC,20).
-enemy(6,johanes,ularPython,20).
-enemy(7,tude,ularPython,20).
-enemy(9,asyraf,ularPython,20).
+enemy(6,johanes,batuRuby,20).
+enemy(7,tude,batuRuby,20).
+enemy(9,asyraf,batuRuby,20).
 enemy(10,asif,ularPython,20).
 enemy(8,bari,ularPython,20).
 enemy(11,jofi,ularPython,20).
 enemy(12,kintan,ularPython,20).
 enemy(13,danlap,agitashit,50).
-enemy(14,asistenlogif,nilaiE,100).
+enemy(14,asistenlogif,tubes,100).
 enemy(15,winston,batuRuby,20).
 enemy(16,steve,batuRuby,20).
 enemy(17,pakRila,nilaiE,100).
@@ -215,7 +215,7 @@ dropWeapon(D,X,Y):-
   asserta(objLoc(D,X,Y)),!.
 
 dropWeapon(D,_,_):-
-  write(D), write(' tidak memiliki senjata untuk di drop'),nl,!.
+  write(D), write(' tidak dapat di drop'),nl,!.
 
 
 
