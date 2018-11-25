@@ -61,7 +61,7 @@ do(take(_)):- write('Inventory full, ferguso'), nl, !.
 do(use(X)):- uses(X),move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(attack) :-	attack_enemy, move_all_enemies,langkah(L),plusdisDeadzone(L), L2 is L+1, retract(langkah(L)),asserta(langkah(L2)),!.
 do(status) :- statuss,!.
-do(load) :-	loadgame, nl, !.
+do(load) :-	loadgame, !.
 do(_) :- write('Invalid Input'), nl, !.
 
 
@@ -232,9 +232,9 @@ showhelp :-
 	write('[6] s'), nl,
 	write('[7] e'), nl,
 	write('[8] w'), nl,
-	write('[9] take'), nl,
-	write('[10] drop'), nl,
-	write('[11] use'), nl,
+	write('[9] take(item)'), nl,
+	write('[10] drop(item)'), nl,
+	write('[11] use(item)'), nl,
 	write('[12] attack'), nl,
 	write('[13] status'), nl,
 	write('[14] save'), nl,

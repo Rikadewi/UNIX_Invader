@@ -29,21 +29,24 @@ plusDeadzone:-
 	rightzone(D1,D2),
 	supply.
 
-upzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retract(objLoc(_,X,Y)), asserta(deadzone(D1,D1)),!.
+upzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retractall(objLoc(_,X,Y)), asserta(deadzone(D1,D1)),!.
 upzone(D1,D1):- asserta(deadzone(D1,D1)),!.
-upzone(D1,D2):- objLoc(_,X,Y), X==D1,Y==D2,!, retract(objLoc(_,X,Y)), asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
+upzone(D1,D2):- objLoc(_,X,Y), X==D1,Y==D2,!, retractall(objLoc(_,X,Y)), asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
 upzone(D1,D2):- asserta(deadzone(D1,D2)), Dnew is D2-1 , upzone(D1,Dnew),!.
-downzone(D2,D2):-objLoc(_,X,Y), X==D2,Y==D2,!, retract(objLoc(_,X,Y)), asserta(deadzone(D2,D2)),!.
+
+downzone(D2,D2):-objLoc(_,X,Y), X==D2,Y==D2,!, retractall(objLoc(_,X,Y)), asserta(deadzone(D2,D2)),!.
 downzone(D2,D2):-asserta(deadzone(D2,D2)),!.
-downzone(D1,D2):- objLoc(_,X,Y), X==D2,Y==D1,!, retract(objLoc(_,X,Y)),asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
+downzone(D1,D2):- objLoc(_,X,Y), X==D2,Y==D1,!, retractall(objLoc(_,X,Y)),asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
 downzone(D1,D2):- asserta(deadzone(D2,D1)), Dnew is D1+1 , downzone(Dnew,D2),!.
-leftzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retract(objLoc(_,X,Y)), retract(deadzone(D1,D1)),!.
+
+leftzone(D1,D1):- objLoc(_,X,Y), X==D1,Y==D1,!, retractall(objLoc(_,X,Y)), retract(deadzone(D1,D1)),!.
 leftzone(D1,D1):-retract(deadzone(D1,D1)),!.
-leftzone(D1,D2):- Dnew is D2-1, objLoc(_,X,Y), X==Dnew,Y==D1,!, retract(objLoc(_,X,Y)),asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
+leftzone(D1,D2):- Dnew is D2-1, objLoc(_,X,Y), X==Dnew,Y==D1,!, retractall(objLoc(_,X,Y)),asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
 leftzone(D1,D2):- Dnew is D2-1, asserta(deadzone(Dnew,D1)) , leftzone(D1,Dnew),!.
-rightzone(D2,D2):- objLoc(_,X,Y), X==D2,Y==D2,!, retract(objLoc(_,X,Y)),retract(deadzone(D2,D2)),!.
+
+rightzone(D2,D2):- objLoc(_,X,Y), X==D2,Y==D2,!, retractall(objLoc(_,X,Y)),retract(deadzone(D2,D2)),!.
 rightzone(D2,D2):-retract(deadzone(D2,D2)),!.
-rightzone(D1,D2):- Dnew is D1+1, objLoc(_,X,Y), X==Dnew,Y==D2,!, retract(objLoc(_,X,Y)),asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
+rightzone(D1,D2):- Dnew is D1+1, objLoc(_,X,Y), X==Dnew,Y==D2,!, retractall(objLoc(_,X,Y)),asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
 rightzone(D1,D2):- Dnew is D1+1, asserta(deadzone(Dnew,D2)) , rightzone(Dnew,D2),!.
 
 

@@ -268,7 +268,7 @@ enemyaction(_,_,_):-
   !.
 
 hitmiss(V,C) :-
-  C == 1, !, write('A wild '), write(V), write(' appears!'), write(' dia berhasil menyerangmu!'),nl,hitplayer(V,C), nl,!.
+  C == 1, !, write('A wild '), write(V), write(' appears!'), write(' dia berhasil menyerangmu!'),nl, hitplayer(V,C), nl,!.
 
 hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu'),nl,hitplayer(V,C),!.
 
