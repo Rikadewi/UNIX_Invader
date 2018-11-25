@@ -41,8 +41,8 @@ start :-
 
 /* Daftar fungsi-fungsi do() yang SUDAH DIIMPLEMENTASI*/
 do(help) :- showhelp, !.
-do(quit) :- 
-	write('Seorang warrior tidak pernah lari dari tanggung jawab.'), nl, 
+do(quit) :-
+	write('Seorang warrior tidak pernah lari dari tanggung jawab.'), nl,
 	write('Apakah Anda yakin ingin meninggalkan permainan?(y/n)'), nl,
 	write('>> '), read(X), end(X), !.
 do(map) :- printLegend, !.
@@ -115,11 +115,6 @@ savegame:-
 	findall(Dy,deadzone(Dx,Dy),ListDzoneY),
 	write_list_twoparam('savefile.txt',ListDzoneX,ListDzoneY,deadzone).
 
-	/*forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),*/
-	/*forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
-	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
-	forall(deadzone(Dx,Dy),(write(Save,deadzone(Dx,Dy)),write(Save,'.'),nl(Save))),
-	*/
 
 /*Bagian rekursif untuk save game*/
 writeData_One(_,[],_) :- !.
@@ -223,7 +218,7 @@ load_all(Load):-
 
 showhelp :-
 	name(X),
-	write(X), 
+	write(X),
 	write(' kamu adalah warrior terpilih yang ditakdirkan untuk melawan si jahat Joshua'), nl,
 	write('Berikut aksi yang dapat kamu lakukan untuk menyelamatkan dunia'), nl,
 	write('[1] help'), nl,
@@ -435,8 +430,8 @@ ammo_name(2, ammoRuby).
 ammo_name(3, ammoPython).
 
 /*END CONDITION*/
-end(n) :- 
-	write('Anda memang seorang warrior sejati, '), 
+end(n) :-
+	write('Anda memang seorang warrior sejati, '),
 	name(X), write(X), write('!'), nl, !.
 
 end(y) :- halt, !.
