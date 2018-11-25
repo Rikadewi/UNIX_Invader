@@ -36,33 +36,25 @@ spawn_level(1) :-
   random(1,18,X),
   spawn_enemy(X),
   random(1,18,Y),
-  X\==Y,
   spawn_enemy(Y),
   random(1,18,Z),
-  Z\==Y,Z\==X,
   spawn_enemy(Z),
   random(1,18,U),
-  U\==Z,U\==X,U\==Y,
   spawn_enemy(U),
   asserta(totalenemy(4)).
 
 spawn_level(2) :-
   random(1,18,X),
   spawn_enemy(X),
-  X\==Y,
   random(1,18,Y),
   spawn_enemy(Y),
   random(1,18,Z),
-  Z\==Y,Z\==X,
   spawn_enemy(Z),
   random(1,18,U),
-  U\==Z,U\==X,U\==Y,
   spawn_enemy(U),
   random(1,18,UX),
-  UX\==Z,UX\==X,UX\==Y,UX\==U,
   spawn_enemy(UX),
   random(1,18,UZ),
-  UZ\==UX, UZ\==Z,UZ\==X,UZ\==Y,UZ\==U,
   spawn_enemy(UZ),
   asserta(totalenemy(6)).
 
@@ -231,16 +223,41 @@ dropWeapon(D,_,_):-
 enemyaction(V,X,Y) :-
   currLoc(X,Y),
   random(0,2,C), %klo 1 kena, kalo 0 nggak
-  hitmiss(V,C), nl,
-  hitplayer(V,C), !.
+  hitmiss(V,C).
+
 
 enemyaction(V,X,Y):-
   !.
 
 hitmiss(V,C) :-
-  C == 1, !, write('A wild '), write(V), write(' appears!'), write(' dia berhasil menyerangmu!'),nl, !.
+  C == 1, !, write('A wild '), write(V), write(' appears!'), write(' dia berhasil menyerangmu!'),nl,hitplayer(V,C), nl,!.
 
-hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu!'),nl, !.
+hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu'),nl,hitplayer(V,C),!.
+
+hitplayer(V,1) :-
+  enemy(_,V,W,_),
+  health(X),
+  armor(A),
+  obj(weapon,W),
+  damage(W,D),
+  A=<D,retract(armor(A)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+
+hitplayer(V,1) :-
+  enemy(_,V,W,_),
+  health(X),
+  armor(A),
+  obj(weapon,W),
+  damage(W,D),
+  A>D,
+  Anew is A-D,
+  retract(armor(A)),asserta(armor(Anew)), write('Armor anda telah dirusak oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+
+hitplayer(V,1) :-
+  enemy(_,V,W,D),
+  health(X),
+  armor(A),
+  A=<D,retract(armor(A)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+
 
 hitplayer(V,1) :-
   enemy(_,V,W,_),
@@ -249,13 +266,25 @@ hitplayer(V,1) :-
   damage(W,D),
   X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),write(' menggunakan '), write(W),nl,!.
 
+%kalo special enemy yang gapunya weapon
 hitplayer(V,1) :-
   enemy(_,V,W,D),
   health(X),
   X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),write(' menggunakan '), write(W),nl,!.
 
 hitplayer(V,1) :-
-  enemy(_,V,W,D),
+  enemy(_,V,W,_),
+  health(X),
+  obj(weapon,W),
+  damage(W,D),
+  X>D, Xnew is X-D,
+  retract(health(X)), asserta(health(Xnew)),
+  write('Anda telah disakiti oleh '), write(V),write(' menggunakan '),write(W),nl,
+  write('Nyawa berkurang sebesar '), write(D),nl,!.
+
+%Special enemy
+hitplayer(V,1) :-
+  enemy(_,V,_,D),
   health(X),
   X>D, Xnew is X-D,
   retract(health(X)), asserta(health(Xnew)),
