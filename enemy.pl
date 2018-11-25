@@ -44,8 +44,7 @@ spawn_level(1) :-
   asserta(totalenemy(4)).
 
 spawn_level(2) :-
-  random(1,18,X),
-  spawn_enemy(X),
+  spawn_enemy(1),
   random(1,18,Y),
   spawn_enemy(Y),
   random(1,18,Z),
@@ -59,12 +58,9 @@ spawn_level(2) :-
   asserta(totalenemy(6)).
 
 spawn_level(3) :-
-  random(1,18,X),
-  spawn_enemy(X),
-  random(1,18,Y),
-  spawn_enemy(Y),
-  random(1,18,Z),
-  spawn_enemy(Z),
+  spawn_enemy(17),
+  spawn_enemy(14),
+  spawn_enemy(1),
   random(1,18,U),
   spawn_enemy(U),
   random(1,18,V),
@@ -95,9 +91,9 @@ move_enemy_bawah(V) :-
 	enemyLoc(V,X,Y),
 	Xmove is X,
 	Ymove is Y+1,
+  \+deadzone(Xmove,Ymove),!,
 	retract(enemyLoc(V,X,Y)),
 	asserta(enemyLoc(V,Xmove,Ymove)),
-	\+deadzone(Xmove,Ymove),!,
   enemyaction(V,Xmove,Ymove),!.
 move_enemy_bawah(N) :-
 	move_enemy_atas(N), !.
@@ -106,29 +102,32 @@ move_enemy_atas(N) :-
 	enemyLoc(N,X,Y),
 	Xmove is X,
 	Ymove is Y-1,
+  \+deadzone(Xmove,Ymove), !,
+  enemyaction(N,Xmove,Ymove),
 	retract(enemyLoc(N,X,Y)),
-	asserta(enemyLoc(N,Xmove,Ymove)),
-	\+deadzone(Xmove,Ymove), enemyaction(N,Xmove,Ymove),!.
+	asserta(enemyLoc(N,Xmove,Ymove)).
+
 move_enemy_atas(N) :-
-	move_enemy_bawah(N), !.
+	move_enemy_kiri(N), !.
 
 move_enemy_kanan(A) :-
 	enemyLoc(A,X,Y),
 	Xmove is X+1,
 	Ymove is Y,
+  \+deadzone(Xmove,Ymove), !,
+  enemyaction(A,Xmove,Ymove),
 	retract(enemyLoc(A,X,Y)),
-	asserta(enemyLoc(A,Xmove,Ymove)),
-	\+deadzone(Xmove,Ymove), enemyaction(A,Xmove,Ymove),!.
+	asserta(enemyLoc(A,Xmove,Ymove)).
 move_enemy_kanan(N) :-
-	move_enemy_kiri(N), !.
+	move_enemy_bawah(N), !.
 
 move_enemy_kiri(N) :-
 	enemyLoc(N,X,Y),
 	Xmove is X-1,
 	Ymove is Y,
+  \+deadzone(Xmove,Ymove),
 	retract(enemyLoc(N,X,Y)),
 	asserta(enemyLoc(N,Xmove,Ymove)),
-	\+deadzone(Xmove,Ymove),
   enemyaction(N,Xmove,Ymove),!.
 move_enemy_kiri(N) :-
 	move_enemy_kanan(N), !.
@@ -194,7 +193,7 @@ attack_enemy :-
 
 attack_enemy :-
   currLoc(X,Y),
-  enemyLoc(V,X,Y),
+  enemyLoc(_S,X,Y),
   equip(W),
   weapon_ammo(W, AmmoW),
   ammo(AmmoW, WA),
@@ -203,7 +202,7 @@ attack_enemy :-
 
 attack_enemy :-
   currLoc(X,Y),
-  enemyLoc(V,X,Y),
+  enemyLoc(_,X,Y),
   write('Anda mencoba melawannya dengn tangan kosong, namun apa daya seorang mahasiswa IF yang terlalu banyak nubes, jarang olahraga'),nl,
   write('Seranganmu Gagal!'),!.
 
@@ -226,13 +225,14 @@ enemyaction(V,X,Y) :-
   hitmiss(V,C).
 
 
-enemyaction(V,X,Y):-
+enemyaction(_,_,_):-
   !.
 
 hitmiss(V,C) :-
   C == 1, !, write('A wild '), write(V), write(' appears!'), write(' dia berhasil menyerangmu!'),nl,hitplayer(V,C), nl,!.
 
 hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu'),nl,hitplayer(V,C),!.
+
 
 hitplayer(V,1) :-
   enemy(_,V,W,_),
@@ -291,5 +291,5 @@ hitplayer(V,1) :-
   write('Anda telah disakiti oleh '), write(V),write(' menggunakan '),write(W),nl,
   write('Nyawa berkurang sebesar '), write(D),nl,!.
 
-hitplayer(V,0) :-
+hitplayer(_,0) :-
   write('Anda berhasil menghindarnya!'),nl.
