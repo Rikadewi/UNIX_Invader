@@ -18,15 +18,6 @@ enemy(15,winston,batuRuby,30).
 enemy(16,steve,batuRuby,30).
 enemy(17,pakRila,nilaiE,100).
 
-is_all_deadzone(X,Y) :-
-  Xleft is X-1,
-  Xright is X+1,
-  Yup is Y-1,
-  Ydown is Y+1,
-  deadzone(X,Yup),
-  deadzone(X,Ydown),
-  deadzone(Xleft,Y),
-  deadzone(Xright,Y),!.
 
 spawn_enemy(N):-
   enemy(N,V,_,_),
@@ -86,8 +77,6 @@ spawn_level(3) :-
   spawn_enemy(D),
   asserta(totalenemy(10)).
 
-
-
 remove_all_enemies :-
   enemyLoc(_,_,_),
   retractall(enemyLoc(_,_,_)), !.
@@ -104,6 +93,7 @@ move_enemy_bawah(V) :-
   retract(enemyLoc(V,X,Y)),
   asserta(enemyLoc(V,Xmove,Ymove)),
   enemyaction(V,Xmove,Ymove),!.
+
 move_enemy_bawah(N) :-
   move_enemy_atas(N), !.
 
@@ -114,19 +104,12 @@ move_enemy_atas(N) :-
   \+deadzone(Xmove,Ymove), !,
   enemyaction(N,Xmove,Ymove),
   retract(enemyLoc(N,X,Y)),
-  asserta(enemyLoc(N,Xmove,Ymove)).
+  asserta(enemyLoc(N,Xmove,Ymove)), !.
 
 move_enemy_atas(N) :-
   move_enemy_kiri(N), !.
 
-move_enemy_kanan(A) :-
-  enemyLoc(A,X,Y),
-  is_all_deadzone(X,Y),!,
-  retract(enemyLoc(A,X,Y)),
-  totalenemy(N),
-  Nnew is N-1,
-  retract(totalenemy(N)),
-  asserta(totalenemy(Nnew)), !.
+
 
 move_enemy_kanan(A) :-
   enemyLoc(A,X,Y),
@@ -148,11 +131,13 @@ move_enemy_kiri(N) :-
   retract(enemyLoc(N,X,Y)),
   asserta(enemyLoc(N,Xmove,Ymove)),
   enemyaction(N,Xmove,Ymove),!.
+
 move_enemy_kiri(N) :-
   move_enemy_kanan(N), !.
 
 
 /* enemy move sesuai Op nya*/
+
 move_enemy_random(N, Op) :-
   Op =:= 1,
   move_enemy_atas(N), !.
@@ -170,27 +155,61 @@ move_enemy_random(N, Op) :-
   move_enemy_kiri(N), !.
 
 /* rekursif, move semua enemy yang masih hidup */
+
 move_ene([]).
+/*
 move_ene(List):-
   List=[H|Tail],
   enemyLoc(H, X, Y),
   currLoc(X, Y),
-  move_ene(Tail).
+  move_ene(Tail), !.
+*/
+
+move_ene(List):-
+  List=[H|Tail],
+  all_deadzone(H), !,
+  move_ene(Tail), !.
+
 move_ene(List):-
   List=[H|Tail],
   % set_seed(5), randomize,
   random(1,5,Op),
   move_enemy_random(H, Op),
-  move_ene(Tail).
+  move_ene(Tail), !.
+/*
 move_ene(List) :-
   List = [_|Tail],
-  move_ene(Tail).
+  move_ene(Tail), !.
+*/
+
+move_all_enemies :-
+  totalenemy(N),
+  N =:= 0, !.
 
 move_all_enemies :-
   write('semua enemy bergerak, FOKUS MAS/MBA!'),nl,
   findall(N,enemyLoc(N,_,_),Listene),
   move_ene(Listene), !.
 
+
+all_deadzone(A) :-
+  enemyLoc(A,X,Y),
+  is_all_deadzone(X,Y),!,
+  retract(enemyLoc(A,X,Y)),
+  totalenemy(N),
+  Nnew is N-1,
+  retract(totalenemy(N)),
+  asserta(totalenemy(Nnew)), !.
+
+is_all_deadzone(X,Y) :-
+  Xleft is X-1,
+  Xright is X+1,
+  Yup is Y-1,
+  Ydown is Y+1,
+  deadzone(X,Yup),
+  deadzone(X,Ydown),
+  deadzone(Xleft,Y),
+  deadzone(Xright,Y),!.
 
 attack_enemy :-
   currLoc(X,Y),
@@ -209,7 +228,7 @@ attack_enemy :-
   WAnew is WA-1,
   Nnew is N-1,
   asserta(ammo(AmmoW, WAnew)),
-  asserta(totalenemy(Nnew)).
+  asserta(totalenemy(Nnew)), !.
 
 attack_enemy :-
   currLoc(X,Y),
@@ -218,7 +237,7 @@ attack_enemy :-
   weapon_ammo(W, AmmoW),
   ammo(AmmoW, WA),
   WA=0,!,
-  write('Anda Mencoba menggunakan '), write(W), write(' namun Ammo Kosong, makanya spek diperhatikan!').
+  write('Anda Mencoba menggunakan '), write(W), write(' namun Ammo Kosong, makanya spek diperhatikan!'), !.
 
 attack_enemy :-
   currLoc(X,Y),
@@ -253,10 +272,21 @@ hitmiss(V,C) :-
 
 hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungnya anda sudah melihatnya terlebih dahulu'),nl,hitplayer(V,C),!.
 
-
 hitplayer(V,1) :-
   enemy(_,V,W,_),
   health(X),
+  armor(A),
+  A == 0, !,
+  obj(weapon,W),
+  damage(W,D),
+  X>D, Xnew is X-D,
+  retract(health(X)), asserta(health(Xnew)),
+  write('Anda telah disakiti oleh '), write(V),write(' menggunakan '),write(W),nl,
+  write('Nyawa berkurang sebesar '), write(D),nl,!.
+
+hitplayer(V,1) :-
+  enemy(_,V,W,_),
+  health(_),
   armor(A),
   obj(weapon,W),
   damage(W,D),
@@ -264,7 +294,7 @@ hitplayer(V,1) :-
 
 hitplayer(V,1) :-
   enemy(_,V,W,_),
-  health(X),
+  health(_),
   armor(A),
   obj(weapon,W),
   damage(W,D),
@@ -274,7 +304,7 @@ hitplayer(V,1) :-
 
 hitplayer(V,1) :-
   enemy(_,V,W,D),
-  health(X),
+  health(_),
   armor(A),
   A=<D,retract(armor(A)),asserta(armor(0)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
 
@@ -292,19 +322,11 @@ hitplayer(V,1) :-
   health(X),
   X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),write(' menggunakan '), write(W),nl,!.
 
-hitplayer(V,1) :-
-  enemy(_,V,W,_),
-  health(X),
-  obj(weapon,W),
-  damage(W,D),
-  X>D, Xnew is X-D,
-  retract(health(X)), asserta(health(Xnew)),
-  write('Anda telah disakiti oleh '), write(V),write(' menggunakan '),write(W),nl,
-  write('Nyawa berkurang sebesar '), write(D),nl,!.
+
 
 %Special enemy
 hitplayer(V,1) :-
-  enemy(_,V,_,D),
+  enemy(_,V,W,D),
   health(X),
   X>D, Xnew is X-D,
   retract(health(X)), asserta(health(Xnew)),
@@ -312,4 +334,4 @@ hitplayer(V,1) :-
   write('Nyawa berkurang sebesar '), write(D),nl,!.
 
 hitplayer(_,0) :-
-write('Anda berhasil menghindarnya!'),nl.
+  write('Anda berhasil menghindarnya!'),nl.
