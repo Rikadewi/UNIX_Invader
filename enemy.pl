@@ -274,40 +274,40 @@ hitmiss(V,C) :- write('A wild '), write(V), write(' appears!'), write(' Untungny
 
 hitplayer(V,1) :-
   enemy(_,V,W,_),
-  health(X),
+  health(_),
   armor(A),
-  A == 0, !,
+  A>0, !,
+  obj(weapon,W),
+  damage(W,D),
+  A=<D, !, retract(armor(A)), asserta(armor(0)),write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+
+hitplayer(V,1) :-
+  enemy(_,V,W,_),
+  health(_),
+  armor(A),
+  A>0, !,
+  obj(weapon,W),
+  damage(W,D),
+  A>D, !, 
+  Anew is A-D,
+  retract(armor(A)),asserta(armor(Anew)), write('Armor anda telah dirusak oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+/*
+hitplayer(V,1) :-
+  enemy(_,V,W,D),
+  health(_),
+  armor(A),
+  A>0, !,
+  A=<D,retract(armor(A)),asserta(armor(0)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+*/
+hitplayer(V,1) :-
+  enemy(_,V,W,_),
+  health(X),
   obj(weapon,W),
   damage(W,D),
   X>D, Xnew is X-D,
   retract(health(X)), asserta(health(Xnew)),
   write('Anda telah disakiti oleh '), write(V),write(' menggunakan '),write(W),nl,
   write('Nyawa berkurang sebesar '), write(D),nl,!.
-
-hitplayer(V,1) :-
-  enemy(_,V,W,_),
-  health(_),
-  armor(A),
-  obj(weapon,W),
-  damage(W,D),
-  A=<D,retract(armor(A)), asserta(armor(0)),write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
-
-hitplayer(V,1) :-
-  enemy(_,V,W,_),
-  health(_),
-  armor(A),
-  obj(weapon,W),
-  damage(W,D),
-  A>D,
-  Anew is A-D,
-  retract(armor(A)),asserta(armor(Anew)), write('Armor anda telah dirusak oleh '), write(V),write(' menggunakan '), write(W),nl,!.
-
-hitplayer(V,1) :-
-  enemy(_,V,W,D),
-  health(_),
-  armor(A),
-  A=<D,retract(armor(A)),asserta(armor(0)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
-
 
 hitplayer(V,1) :-
   enemy(_,V,W,_),
@@ -321,8 +321,6 @@ hitplayer(V,1) :-
   enemy(_,V,W,D),
   health(X),
   X=<D,retract(health(X)), asserta(health(0)), write('Anda telah terbunuh oleh '), write(V),write(' menggunakan '), write(W),nl,!.
-
-
 
 %Special enemy
 hitplayer(V,1) :-

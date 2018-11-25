@@ -243,11 +243,13 @@ showhelp :-
 printLegend :-
 	write('Keterangan:'), nl,
 	write('>> P: Posisi '), name(X), write(X), write(' sekarang'), nl,
+	/*
 	write('>> E: Enemy'), nl,
 	write('>> O: Ammo'), nl,
 	write('>> A: Armor'), nl,
 	write('>> M: Medicine'), nl,
 	write('>> W: weapon'), nl,
+	*/
 	write('>> X: Deadzone'), nl, nl,
 	printmap(0,0),!.
 
@@ -396,6 +398,7 @@ supply :-
 	disDeadzone(A),
 	A1 is 11-A+1,
 	/*supply medicine*/
+	set_seed(2),randomize,
 	random(A,A1,X),
 	random(A,A1,Y),
 	random(1,4,M),
