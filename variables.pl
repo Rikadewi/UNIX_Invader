@@ -62,7 +62,7 @@ newarmor(jahim, 100).
 newarmor(jamal, 50).
 newarmor(slayerSparta, 25).
 
-newammo(ammoruby, 5).
+newammo(ammoRuby, 5).
 newammo(ammoC, 5).
 newammo(ammoPython, 5).
 newammo(ammoJava,5).
