@@ -22,15 +22,14 @@ is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
 /*Static Variable*/
 
 health(50).
-armor(40).
+armor(0).
 currLoc(1,1).
 langkah(0).
 /*inventory(none). -- inventory kosong*/
-inventory(nasjep).
-inventory(kunciC).
-inventory(jahim).
 
-equip(batuRuby).
+
+
+equip(none).
 
 
 /*default object*/

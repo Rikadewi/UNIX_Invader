@@ -86,7 +86,7 @@ lookat(X,Y) :-
 	write('P '),!.
 
 lookat(X,Y) :-
-	\+is_valid(X,Y),
+	deadzone(X,Y),
 	write('X '),!.
 
 

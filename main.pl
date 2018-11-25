@@ -16,6 +16,7 @@ start :-
 	write('.##.....#.##...##..##..##...##....##.##...##...##.##..##.....#.##.....#.##......##....##.'),nl,
 	write('..#######.##....#.###.##.....#...###.##....#....###...##.....#.########.#######.##.....##'),nl,
 	nl,nl,
+
 	write('Hai warrior! Siapa namamu? (dimulai huruf kecil)'), nl,
 	write('>> '),
 	read(X),
@@ -98,8 +99,8 @@ savegame:-
 	write(Save,disDeadzone(Dead)),write(Save,'.'),nl(Save),
 	langkah(L),
 	write(Save,langkah(L)),write(Save,'.'),nl(Save),
-	maxinventory(I),
-	write(Save,maxinventory(I)),write(Save,'.'),nl(Save),
+	maxinventory(Max),
+	write(Save,maxinventory(Max)),write(Save,'.'),nl(Save),
 	close(Save),
 	findall(I,inventory(I),ListInvent),
 	write_list_oneparam('savefile.txt',ListInvent,inventory),
@@ -115,11 +116,6 @@ savegame:-
 	findall(Dy,deadzone(Dx,Dy),ListDzoneY),
 	write_list_twoparam('savefile.txt',ListDzoneX,ListDzoneY,deadzone).
 
-	/*forall(inventory(Invent),(write(Save,inventory(Invent)),write(Save,'.'),nl(Save))),*/
-	/*forall(objLoc(Nama_Object,OX,OY),(write(Save,objLoc(Nama_Object,OX,OY)),write(Save,'.'),nl(Save))),
-	forall(enemyLoc(Nama_Enemy,EX,EY),(write(Save,enemyLoc(Nama_Enemy,EX,EY)),write(Save,'.'),nl(Save))),
-	forall(deadzone(Dx,Dy),(write(Save,deadzone(Dx,Dy)),write(Save,'.'),nl(Save))),
-	*/
 
 /*Bagian rekursif untuk save game*/
 writeData_One(_,[],_) :- !.
@@ -181,10 +177,10 @@ loadgame:-
 	totalenemy(E),
 	difficulty(L),
 	disDeadzone(D),
-	langkah(L),
-	maxinventory(I),
-	retractall(langkah(L)),
-	retractall(maxinventory(I)),
+	langkah(S),
+	maxinventory(Max),
+	retractall(langkah(S)),
+	retractall(maxinventory(Max)),
 	retractall(difficulty(L)),
 	retractall(disDeadzone(D)),
 	retractall(health(H)),

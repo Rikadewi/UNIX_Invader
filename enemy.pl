@@ -110,6 +110,27 @@ move_enemy_atas(N) :-
 move_enemy_atas(N) :-
 	move_enemy_kiri(N), !.
 
+
+/*
+move_enemy_kanan(A) :-
+	enemyLoc(A,X,Y),
+  is_all_deadzone(X,Y),!,
+	retract(enemyLoc(A,X,Y)).
+  totalenemy(N),
+  Nnew is N-1,
+  retract(totalenemy(N)),
+  asserta(totalenemy(Nnew)).
+
+is_al_deadzone(X,Y) :-
+  Xleft is X-1,
+  Xright is X+1,
+  Yup is Y-1,
+  Ydown is Y+1,
+  deadzone(X,Yup),
+  deadzone(X,Ydown),
+  deadzone(Xleft,Y).
+  deadone(Xright,Y),!.
+*/
 move_enemy_kanan(A) :-
 	enemyLoc(A,X,Y),
 	Xmove is X+1,
@@ -131,6 +152,7 @@ move_enemy_kiri(N) :-
   enemyaction(N,Xmove,Ymove),!.
 move_enemy_kiri(N) :-
 	move_enemy_kanan(N), !.
+
 
 /* enemy move sesuai Op nya*/
 move_enemy_random(N, Op) :-
@@ -240,7 +262,7 @@ hitplayer(V,1) :-
   armor(A),
   obj(weapon,W),
   damage(W,D),
-  A=<D,retract(armor(A)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+  A=<D,retract(armor(A)), asserta(armor(0)),write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
 
 hitplayer(V,1) :-
   enemy(_,V,W,_),
@@ -256,7 +278,7 @@ hitplayer(V,1) :-
   enemy(_,V,W,D),
   health(X),
   armor(A),
-  A=<D,retract(armor(A)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
+  A=<D,retract(armor(A)),asserta(armor(0)), write('Armor anda telah dihancurkan oleh '), write(V),write(' menggunakan '), write(W),nl,!.
 
 
 hitplayer(V,1) :-
