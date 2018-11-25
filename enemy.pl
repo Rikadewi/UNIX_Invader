@@ -18,6 +18,15 @@ enemy(15,winston,batuRuby,20).
 enemy(16,steve,batuRuby,20).
 enemy(17,pakRila,nilaiE,100).
 
+is_all_deadzone(X,Y) :-
+  Xleft is X-1,
+  Xright is X+1,
+  Yup is Y-1,
+  Ydown is Y+1,
+  deadzone(X,Yup),
+  deadzone(X,Ydown),
+  deadzone(Xleft,Y),
+  deadzone(Xright,Y),!.
 
 spawn_enemy(N):-
   enemy(N,V,_,_),
@@ -110,27 +119,15 @@ move_enemy_atas(N) :-
 move_enemy_atas(N) :-
 	move_enemy_kiri(N), !.
 
-
-/*
 move_enemy_kanan(A) :-
 	enemyLoc(A,X,Y),
   is_all_deadzone(X,Y),!,
-	retract(enemyLoc(A,X,Y)).
+	retract(enemyLoc(A,X,Y)),
   totalenemy(N),
   Nnew is N-1,
   retract(totalenemy(N)),
-  asserta(totalenemy(Nnew)).
+  asserta(totalenemy(Nnew)), !.
 
-is_al_deadzone(X,Y) :-
-  Xleft is X-1,
-  Xright is X+1,
-  Yup is Y-1,
-  Ydown is Y+1,
-  deadzone(X,Yup),
-  deadzone(X,Ydown),
-  deadzone(Xleft,Y).
-  deadone(Xright,Y),!.
-*/
 move_enemy_kanan(A) :-
 	enemyLoc(A,X,Y),
 	Xmove is X+1,
@@ -138,7 +135,8 @@ move_enemy_kanan(A) :-
   \+deadzone(Xmove,Ymove), !,
   enemyaction(A,Xmove,Ymove),
 	retract(enemyLoc(A,X,Y)),
-	asserta(enemyLoc(A,Xmove,Ymove)).
+	asserta(enemyLoc(A,Xmove,Ymove)), !.
+
 move_enemy_kanan(N) :-
 	move_enemy_bawah(N), !.
 

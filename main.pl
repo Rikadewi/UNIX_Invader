@@ -31,7 +31,9 @@ start :-
 	asserta(difficulty(L)), nl,
 	write('Nah sekarang saatnya beraksi!'), nl,
 	do(help),
+	supply,
 	spawn_player,
+	
 	spawn_level(L),nl, %Nanti ini diganti sama spawn_level(N) dimana N adalah integer 1 (gampang), 2(sedeng), 3(susah).
 
 	repeat,
@@ -419,8 +421,8 @@ medic_name(2, nasjep).
 medic_name(3, crisbar).
 
 armor_name(1, jahim).
-armor_name(1, jamal).
-armor_name(1, slayerSparta).
+armor_name(2, jamal).
+armor_name(3, slayerSparta).
 
 weapon_name(1, kunciC).
 weapon_name(2, batuRuby).
