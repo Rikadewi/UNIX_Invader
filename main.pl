@@ -395,26 +395,37 @@ drop(X) :- write('Tidak ada barang '), write(X), write(' di inventory'), nl, !.
 supply :-
 	disDeadzone(A),
 	A1 is 11-A+1,
+	/*supply medicine*/
 	random(A,A1,X),
 	random(A,A1,Y),
 	random(1,4,M),
 	medic_name(M, M_name),
 	asserta(objLoc(M_name,X,Y)),
+	/*supply armor*/
 	random(A,A1,X2),
 	random(A,A1,Y2),
 	random(1,4,Ar),
 	armor_name(Ar, A_name),
 	asserta(objLoc(A_name,X2,Y2)),
+	/*supply weapon*/
 	random(A,A1,X3),
 	random(A,A1,Y3),
-	random(1,4,W),
+	random(1,5,W),
 	weapon_name(W, W_name),
 	asserta(objLoc(W_name,X3,Y3)),
+	/*supply armor*/
 	random(A,A1,X4),
 	random(A,A1,Y4),
-	random(1,4,O),
+	random(1,5,O),
 	ammo_name(O, O_name),
-	asserta(objLoc(O_name,X4,Y4)), !.
+	asserta(objLoc(O_name,X4,Y4)), 
+	/*supply bag*/
+	random(A,A1,X5),
+	random(A,A1,Y5),
+	random(1,4,B),
+	bag_name(B, B_name),
+	asserta(objLoc(B_name,X5,Y5)), 
+	!.
 
 medic_name(1, ekado).
 medic_name(2, nasjep).
@@ -427,10 +438,16 @@ armor_name(3, slayerSparta).
 weapon_name(1, kunciC).
 weapon_name(2, batuRuby).
 weapon_name(3, ularPython).
+weapon_name(4, kopiJava).
 
 ammo_name(1, ammoC).
 ammo_name(2, ammoRuby).
 ammo_name(3, ammoPython).
+ammo_name(4, ammoJava).
+
+bag_name(1, bagLv1).
+bag_name(2, bagLv2).
+bag_name(3, bagLv3).
 
 /*END CONDITION*/
 end(n) :-

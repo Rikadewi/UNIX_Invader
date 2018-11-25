@@ -1,7 +1,3 @@
-/*Menandakan lokasi valid*/
-is_loc_valid(X,Y):- X=<10,X>=1,Y=<10,Y>=1.
-
-
 /*Variabel Dinamik*/
 :- dynamic(health/1).
 :- dynamic(armor/1). %(darah_armor).
@@ -25,12 +21,7 @@ health(50).
 armor(0).
 currLoc(1,1).
 langkah(0).
-/*inventory(none). -- inventory kosong*/
-
-
-
 equip(none).
-
 
 /*default object*/
 obj(armor, jahim).
@@ -42,11 +33,14 @@ obj(medicine,crisbar).
 obj(weapon,kunciC).
 obj(weapon,batuRuby).
 obj(weapon,ularPython).
+obj(weapon,kopiJava).
 obj(weapon,none).
 obj(weaponammo,ammoC).
 obj(weaponammo,ammoRuby).
 obj(weaponammo,ammoPython).
+obj(weaponammo,ammoJava).
 obj(weaponammo,ammonone).
+
 obj(bag,bagLv1). %nambah 1 inventory
 obj(bag,bagLv2). %nambah 2 inventory
 obj(bag,bagLv3). %nambah 3 inventory
@@ -58,11 +52,11 @@ weapon_ammo(ularPython, ammoPython).
 weapon_ammo(kopiJava, ammoJava).
 weapon_ammo(none, ammonone).
 
-ammo(ammoRuby, 4).
+ammo(ammoRuby, 0).
 ammo(ammoC, 0).
 ammo(ammoPython, 0).
-ammo(ammonone, 0).
 ammo(ammoJava,0).
+ammo(ammonone, 0).
 
 newarmor(jahim, 100).
 newarmor(jamal, 50).
@@ -73,21 +67,15 @@ newammo(ammoC, 5).
 newammo(ammoPython, 5).
 newammo(ammoJava,5).
 
+newmedicine(ekado, 30).
+newmedicine(nasjep, 50).
+newmedicine(crisbar, 100).
+
 damage(kunciC,20).
 damage(batuRuby,30).
 damage(ularPython,40).
+damage(kopiJava,50).
 
-/*default lokasi object*/
-/*
-objLoc(kunciC, 9, 10).
-objLoc(kunciC, 3, 10).
-objLoc(ammoC, 8, 9).
-objLoc(ekado, 1, 4).
-objLoc(slayerSparta, 6, 8).
-objLoc(bagLv1, 5, 5).
-objLoc(bagLv2, 5, 4).
-objLoc(bagLv3, 5, 3).
-*/
 
 /*default peta*/
 loc(1,1,'Hutan bagian barat laut ITB').

@@ -5,17 +5,17 @@ enemy(2,badur,kunciC,20).
 enemy(3,lukas,kunciC,20).
 enemy(4,rika,kunciC,20).
 enemy(5,alam,kunciC,20).
-enemy(6,johanes,batuRuby,20).
-enemy(7,tude,batuRuby,20).
-enemy(9,asyraf,batuRuby,20).
-enemy(10,asif,ularPython,20).
-enemy(8,bari,ularPython,20).
-enemy(11,jofi,ularPython,20).
-enemy(12,kintan,ularPython,20).
+enemy(6,johanes,batuRuby,30).
+enemy(7,tude,batuRuby,30).
+enemy(9,asyraf,batuRuby,30).
+enemy(10,asif,ularPython,40).
+enemy(8,bari,ularPython,40).
+enemy(11,jofi,kopiJava,50).
+enemy(12,kintan,kopiJava,50).
 enemy(13,danlap,agitashit,50).
 enemy(14,asistenlogif,tubes,100).
-enemy(15,winston,batuRuby,20).
-enemy(16,steve,batuRuby,20).
+enemy(15,winston,batuRuby,30).
+enemy(16,steve,batuRuby,30).
 enemy(17,pakRila,nilaiE,100).
 
 is_all_deadzone(X,Y) :-
@@ -89,107 +89,107 @@ spawn_level(3) :-
 
 
 remove_all_enemies :-
-	enemyLoc(_,_,_),
-	retractall(enemyLoc(_,_,_)), !.
+  enemyLoc(_,_,_),
+  retractall(enemyLoc(_,_,_)), !.
 remove_all_enemies :-!.
 
 
 /* move 1 enemyLoc(N,X,Y) */
 
 move_enemy_bawah(V) :-
-	enemyLoc(V,X,Y),
-	Xmove is X,
-	Ymove is Y+1,
+  enemyLoc(V,X,Y),
+  Xmove is X,
+  Ymove is Y+1,
   \+deadzone(Xmove,Ymove),!,
-	retract(enemyLoc(V,X,Y)),
-	asserta(enemyLoc(V,Xmove,Ymove)),
+  retract(enemyLoc(V,X,Y)),
+  asserta(enemyLoc(V,Xmove,Ymove)),
   enemyaction(V,Xmove,Ymove),!.
 move_enemy_bawah(N) :-
-	move_enemy_atas(N), !.
+  move_enemy_atas(N), !.
 
 move_enemy_atas(N) :-
-	enemyLoc(N,X,Y),
-	Xmove is X,
-	Ymove is Y-1,
+  enemyLoc(N,X,Y),
+  Xmove is X,
+  Ymove is Y-1,
   \+deadzone(Xmove,Ymove), !,
   enemyaction(N,Xmove,Ymove),
-	retract(enemyLoc(N,X,Y)),
-	asserta(enemyLoc(N,Xmove,Ymove)).
+  retract(enemyLoc(N,X,Y)),
+  asserta(enemyLoc(N,Xmove,Ymove)).
 
 move_enemy_atas(N) :-
-	move_enemy_kiri(N), !.
+  move_enemy_kiri(N), !.
 
 move_enemy_kanan(A) :-
-	enemyLoc(A,X,Y),
+  enemyLoc(A,X,Y),
   is_all_deadzone(X,Y),!,
-	retract(enemyLoc(A,X,Y)),
+  retract(enemyLoc(A,X,Y)),
   totalenemy(N),
   Nnew is N-1,
   retract(totalenemy(N)),
   asserta(totalenemy(Nnew)), !.
 
 move_enemy_kanan(A) :-
-	enemyLoc(A,X,Y),
-	Xmove is X+1,
-	Ymove is Y,
+  enemyLoc(A,X,Y),
+  Xmove is X+1,
+  Ymove is Y,
   \+deadzone(Xmove,Ymove), !,
   enemyaction(A,Xmove,Ymove),
-	retract(enemyLoc(A,X,Y)),
-	asserta(enemyLoc(A,Xmove,Ymove)), !.
+  retract(enemyLoc(A,X,Y)),
+  asserta(enemyLoc(A,Xmove,Ymove)), !.
 
 move_enemy_kanan(N) :-
-	move_enemy_bawah(N), !.
+  move_enemy_bawah(N), !.
 
 move_enemy_kiri(N) :-
-	enemyLoc(N,X,Y),
-	Xmove is X-1,
-	Ymove is Y,
+  enemyLoc(N,X,Y),
+  Xmove is X-1,
+  Ymove is Y,
   \+deadzone(Xmove,Ymove),
-	retract(enemyLoc(N,X,Y)),
-	asserta(enemyLoc(N,Xmove,Ymove)),
+  retract(enemyLoc(N,X,Y)),
+  asserta(enemyLoc(N,Xmove,Ymove)),
   enemyaction(N,Xmove,Ymove),!.
 move_enemy_kiri(N) :-
-	move_enemy_kanan(N), !.
+  move_enemy_kanan(N), !.
 
 
 /* enemy move sesuai Op nya*/
 move_enemy_random(N, Op) :-
-	Op =:= 1,
-	move_enemy_atas(N), !.
+  Op =:= 1,
+  move_enemy_atas(N), !.
 
 move_enemy_random(N, Op) :-
-	Op =:= 2,
-	move_enemy_bawah(N), !.
+  Op =:= 2,
+  move_enemy_bawah(N), !.
 
 move_enemy_random(N, Op) :-
-	Op =:= 3,
-	move_enemy_kanan(N), !.
+  Op =:= 3,
+  move_enemy_kanan(N), !.
 
 move_enemy_random(N, Op) :-
-	Op =:= 4,
-	move_enemy_kiri(N), !.
+  Op =:= 4,
+  move_enemy_kiri(N), !.
 
 /* rekursif, move semua enemy yang masih hidup */
 move_ene([]).
 move_ene(List):-
-	List=[H|Tail],
-	enemyLoc(H, X, Y),
-	currLoc(X, Y),
-	move_ene(Tail).
+  List=[H|Tail],
+  enemyLoc(H, X, Y),
+  currLoc(X, Y),
+  move_ene(Tail).
 move_ene(List):-
-	List=[H|Tail],
-	% set_seed(5), randomize,
-	random(1,5,Op),
-	move_enemy_random(H, Op),
-	move_ene(Tail).
+  List=[H|Tail],
+  % set_seed(5), randomize,
+  random(1,5,Op),
+  move_enemy_random(H, Op),
+  move_ene(Tail).
 move_ene(List) :-
-	List = [_|Tail],
-	move_ene(Tail).
+  List = [_|Tail],
+  move_ene(Tail).
 
 move_all_enemies :-
   write('semua enemy bergerak, FOKUS MAS/MBA!'),nl,
-	findall(N,enemyLoc(N,_,_),Listene),
-	move_ene(Listene), !.
+  findall(N,enemyLoc(N,_,_),Listene),
+  move_ene(Listene), !.
 
 
 attack_enemy :-
@@ -312,4 +312,4 @@ hitplayer(V,1) :-
   write('Nyawa berkurang sebesar '), write(D),nl,!.
 
 hitplayer(_,0) :-
-  write('Anda berhasil menghindarnya!'),nl.
+write('Anda berhasil menghindarnya!'),nl.

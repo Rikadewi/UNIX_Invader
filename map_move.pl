@@ -53,6 +53,7 @@ plusdisDeadzone(Count):- Count==21,disDeadzone(D) , D2 is D+1,retract(disDeadzon
 plusdisDeadzone(Count):- Count==15,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
 plusdisDeadzone(Count):- Count==8,disDeadzone(D) , D2 is D+1,retract(disDeadzone(D)),asserta(disDeadzone(D2)),plusDeadzone,!.
 plusdisDeadzone(_):-!.
+
 /*MOVEMENT*/
 
 north :- currLoc(X,_), X == 0, !, write('Tidak bisa ke atas'), nl, minushp, !.
